@@ -1,0 +1,32 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:latest # After 8.0.26
+    ports:
+      - '3306:3306'
+    env_file: .env
+    volumes:
+      - codal_db_volume:/var/lib/mysql
+    networks:
+      - codal_network
+
+#  web:
+#    build: .
+#    command: python manage.py runserver 0.0.0.0:8000
+#    volumes:
+#      - .:/codal
+#    ports:
+#      - "8000:8000"
+#    depends_on:
+#      - db
+#    links:
+#      - db
+
+volumes:
+  codal_db_volume:
+    external: true
+
+networks:
+  codal_network:
+    external: true
