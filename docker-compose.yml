@@ -28,8 +28,7 @@ services:
   redis:
     container_name: redis
     image: bitnami/redis:latest # After 6.0.15
-    environment:
-      - REDIS_PASSWORD=waldur-redis-pass
+    env_file: .env
 
 
 volumes:
