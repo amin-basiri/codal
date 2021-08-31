@@ -2,7 +2,7 @@
 .idea
 
 # Migrations
-codal/migrations
+#codal/migrations
 
 # dotenv
 .env
