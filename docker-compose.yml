@@ -28,7 +28,6 @@ services:
   redis:
     container_name: redis
     image: bitnami/redis:latest # After 6.0.15
-    env_file: .env
 
 
 volumes:
