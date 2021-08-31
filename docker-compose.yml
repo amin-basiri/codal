@@ -2,6 +2,7 @@ version: '3.3'
 
 services:
   db:
+    container_name: db
     image: mysql:latest # After 8.0.26
     ports:
       - '3306:3306'
@@ -12,6 +13,7 @@ services:
       - codal_network
 
 #  web:
+#    container_name: web
 #    build: .
 #    command: python manage.py runserver 0.0.0.0:8000
 #    volumes:
