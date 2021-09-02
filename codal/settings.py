@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'codal',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ DATABASES = {
         'NAME': 'codal-db',
         'USER': 'root',
         'PASSWORD': 'password',
-        'HOST': 'localhost',  # TODO Change For Final Deploy To "db"
+        'HOST': '127.0.0.1',  # TODO Change For Final Deploy To "db"
         'PORT': 3306,
     }
 }
