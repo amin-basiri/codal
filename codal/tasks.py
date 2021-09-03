@@ -9,6 +9,8 @@ from requests.exceptions import RequestException
 def update():
     try:
         last_letter_datetime = Letter.objects.latest('publish_datetime').publish_datetime
+        # TODO Add Logger
+        # TODO Add Current Date
     except Letter.DoesNotExist:
         last_letter_datetime = None
 
