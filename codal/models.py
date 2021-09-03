@@ -49,7 +49,7 @@ class Letter(TimeStampedModel):
 
     symbol = models.CharField(max_length=100)
 
-    tedan_url = models.CharField(max_length=500, default="", null=True)
+    # tedan_url = models.CharField(max_length=500, default="", null=True)
 
     title = models.CharField(max_length=500)
 
