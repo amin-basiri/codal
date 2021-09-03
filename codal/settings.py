@@ -38,17 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'codal',
-    'preferences',
-    'django.contrib.sites',
 ]
-
-
-SITE_ID = 1
-
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "preferences.context_processors.preferences_cp",
-)
 
 
 MIDDLEWARE = [

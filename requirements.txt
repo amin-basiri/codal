@@ -10,7 +10,6 @@ click-plugins==1.1.1
 click-repl==0.2.0
 Django==3.2.6
 django-model-utils==4.1.1
-django-preferences==1.0.0
 idna==3.2
 kombu==5.1.0
 mysqlclient==2.0.3
