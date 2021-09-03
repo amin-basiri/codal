@@ -27,13 +27,14 @@ class Processor:
         return self._session
 
     def _search(self, page_number=1):
+        global_preferences = global_preferences_registry.manager()
         retry = 1
 
         while retry <= self.max_request_retry:
             try:
                 return self.session.get(self.search_url.format(
                     page_number=page_number,
-                    from_date=global_preferences_registry['update_from_date']
+                    from_date=global_preferences['update_from_date']
                 )).json()
             except requests.exceptions.RequestException as e:
                 if retry < self.max_request_retry:
