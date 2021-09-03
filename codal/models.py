@@ -1,14 +1,21 @@
-from django.db import models
-from model_utils.fields import StatusField
-from model_utils import Choices
+from django.db import models, transaction
 from model_utils.models import TimeStampedModel
 
 
 class Letter(TimeStampedModel):
 
-    STATUS = Choices('retrieved', 'downloading', 'downloaded')
+    class STATUSES:
+        RETRIEVED = 'retrieved'
+        DOWNLOADING = 'downloading'
+        DOWNLOADED = 'downloaded'
 
-    status = StatusField()
+        CHOICES = (
+            (RETRIEVED, 'Retrieved'),
+            (DOWNLOADING, 'Downloading'),
+            (DOWNLOADED, 'Downloaded')
+        )
+
+    status = models.CharField(default=STATUSES.RETRIEVED, max_length=20, choices=STATUSES.CHOICES)
 
     attachment_url = models.CharField(max_length=500, default="", null=True)
 
