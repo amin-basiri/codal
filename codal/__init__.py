@@ -17,6 +17,7 @@ class Processor:
         self._session = requests.session()
         self.max_request_retry = 5
         self.retry_interval = 5
+        self.verify_ssl = False
         self.search_url = 'https://search.codal.ir/api/search/v2/q?PageNumber={page_number}&FromDate={from_date}'
 
     @cached_property
@@ -35,7 +36,7 @@ class Processor:
                 return self.session.get(self.search_url.format(
                     page_number=page_number,
                     from_date=global_preferences['update_from_date']
-                )).json()
+                ), verify=self.verify_ssl).json()
             except requests.exceptions.RequestException as e:
                 if retry < self.max_request_retry:
                     time.sleep(self.retry_interval)
