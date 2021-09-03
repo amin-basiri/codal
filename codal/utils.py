@@ -62,3 +62,5 @@ def update():
                 )
             except IntegrityError as e:
                 continue
+
+        page += 1
