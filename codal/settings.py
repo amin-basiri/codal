@@ -43,6 +43,9 @@ INSTALLED_APPS = [
 ]
 
 
+SITE_ID = 1
+
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     "preferences.context_processors.preferences_cp",
 )
