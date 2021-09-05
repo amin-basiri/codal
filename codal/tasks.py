@@ -1,16 +1,28 @@
 from celery import shared_task
-from codal.models import Log, Letter
-from codal.utils import update
-from codal import runtime_data
+import jdatetime
 from requests.exceptions import RequestException
+from dynamic_preferences.registries import global_preferences_registry
+
+from codal.models import Log, Letter
+from codal.utils import update, jalali_datetime_to_structured_string
+from codal import processor
 
 
 @shared_task()
 def update():
+
+    global_preferences = global_preferences_registry.manager()
+
+    now = jdatetime.datetime.now()
+
     try:
         last_letter_datetime = Letter.objects.latest('publish_datetime').publish_datetime
-        # TODO Add Logger
-        # TODO Add Current Date
+
+        Log.objects.create(
+            type=Log.TYPES.INFO,
+            message="بروزرسانی گزارشات شروع شد.",
+            error=""
+        )
     except Letter.DoesNotExist:
         last_letter_datetime = None
 
@@ -25,6 +37,7 @@ def update():
     else:
         message = "به روز رسانی با موفقیت انجام شد"
         error = ""
+        global_preferences['update_from_date'] = jalali_datetime_to_structured_string(now)
 
     Log.objects.create(
         type=Log.TYPES.ERROR if error else Log.TYPES.SUCCESS,
@@ -32,4 +45,4 @@ def update():
         error=error
     )
 
-    runtime_data.UPDATE_TASK_ID = None
+    processor.UPDATE_TASK_ID = None

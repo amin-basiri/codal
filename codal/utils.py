@@ -1,9 +1,10 @@
 from django.utils.encoding import force_text
 from django.apps import apps
 from django.db import IntegrityError
+import jdatetime
+
 from codal import processor
 from codal.models import Letter
-import jdatetime
 
 
 def serialize_instance(instance):
@@ -64,3 +65,11 @@ def update():
                 continue
 
         page += 1
+
+
+def jalali_datetime_to_structured_string(jd):
+    year = str(jd.year)
+    month = str(jd.month) if jd.month >= 10 else "0{}".format(jd.month)
+    day = str(jd.day) if jd.day >= 10 else "0{}".format(jd.day)
+
+    return "{}/{}/{}".format(year, month, day)
