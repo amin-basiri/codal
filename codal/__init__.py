@@ -19,6 +19,7 @@ class Processor:
         self.retry_interval = 5
         self.verify_ssl = False
         self.search_url = 'https://search.codal.ir/api/search/v2/q?PageNumber={page_number}&FromDate={from_date}'
+        self.base_url = 'https://codal.ir/'
 
     @cached_property
     def session(self):
@@ -44,12 +45,26 @@ class Processor:
                 else:
                     raise e
 
+    def download(self, url):
+        retry = 1
+
+        while retry <= self.max_request_retry:
+            try:
+                response = self.session.get(self.base_url + url)
+            except requests.exceptions.RequestException as e:
+                if retry < self.max_request_retry:
+                    time.sleep(self.retry_interval)
+                    retry += 1
+                else:
+                    raise e
+
+            return response.content
+
     def get_max_page(self,):
         return self._search()['Page']
 
     def get_letters(self, page_number):
         return self._search(page_number=page_number)['Letters']
-
 
 
 processor = Processor()
