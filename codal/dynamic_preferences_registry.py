@@ -70,3 +70,10 @@ class RemoveContentWord(StringPreference):
     name = 'remove_content_word'
     default = "(اصلاحیه)*خلاصه"  # Must Separate With Start(*)
     required = False
+
+
+@global_preferences_registry.register
+class DownloadContentPath(StringPreference):
+    name = 'download_content_path'
+    default = '/Symbols'
+    required = True

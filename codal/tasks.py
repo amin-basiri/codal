@@ -46,3 +46,18 @@ def update():
     )
 
     processor.UPDATE_TASK_ID = None
+
+
+@shared_task
+def download_retrieved_letter():
+    un_downloaded_letters = Letter.objects.filter(status=Letter.STATUSES.RETRIEVED)
+
+    global_preferences = global_preferences_registry.manager()
+    download_pdf_pref = global_preferences['download_pdf']
+    download_content_pref = global_preferences['download_content']
+    download_excel_pref = global_preferences['download_excel']
+    download_attachment_pref = global_preferences['download_attachment']
+
+    for letter in un_downloaded_letters:
+        pass
+        # TODO Call download Function In Utils.py

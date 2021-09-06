@@ -45,7 +45,7 @@ class Processor:
                 else:
                     raise e
 
-    def download(self, url):
+    def download(self, url, return_text=False):
         retry = 1
 
         while retry <= self.max_request_retry:
@@ -58,6 +58,8 @@ class Processor:
                 else:
                     raise e
 
+            if return_text:
+                return response.text
             return response.content
 
     def get_max_page(self,):

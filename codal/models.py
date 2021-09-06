@@ -35,6 +35,8 @@ class Letter(TimeStampedModel):
 
     has_pdf = models.BooleanField(default=True)
 
+    pdf = models.FileField(upload_to='pdfs/', default=None, null=True)
+
     has_xbrl = models.BooleanField(default=False)
 
     is_estimate = models.BooleanField(default=False)
@@ -80,3 +82,5 @@ class Log(TimeStampedModel):
     message = models.CharField(default="", null=True, max_length=100)
 
     error = models.CharField(default="", null=True, max_length=500)
+
+# TODO Add Attachment Model

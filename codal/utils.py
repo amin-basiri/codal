@@ -2,6 +2,8 @@ from django.utils.encoding import force_text
 from django.apps import apps
 from django.db import IntegrityError
 import jdatetime
+from django.core.files.uploadedfile import SimpleUploadedFile
+from dynamic_preferences.registries import global_preferences_registry
 
 from codal import processor
 from codal.models import Letter
@@ -73,3 +75,62 @@ def jalali_datetime_to_structured_string(jd):
     day = str(jd.day) if jd.day >= 10 else "0{}".format(jd.day)
 
     return "{}/{}/{}".format(year, month, day)
+
+
+def download_pdf_to_letter(letter):
+    letter.pdf = SimpleUploadedFile("{}-{}.pdf".format(letter.symbol, letter.code),
+                                    processor.download(letter.pdf_url),
+                                    content_type="application/pdf")
+    letter.save()
+
+
+def download_excel_to_letter(letter):
+    letter.excel = SimpleUploadedFile("{}-{}.xls".format(letter.symbol, letter.code),
+                                    processor.download(letter.excel_url),
+                                    content_type="application/vnd.ms-excel")
+    letter.save()
+
+
+def process_content(content):
+    pass
+    # TODO Process Content Of Letter
+
+
+def process_folder_name(name):
+    pass
+    # TODO Process Folder Name
+
+
+def process_file_name(name):
+    pass
+    # TODO Process File Name
+
+
+def download_content_to_folder(letter):
+    global_preferences = global_preferences_registry.manager()
+
+    content = process_content(processor.download(letter.url, return_text=True))
+    folder_name = process_folder_name(letter.symbol)
+    file_name = process_file_name(letter.title)
+
+    with open('{}/{}/{}.html'.format(global_preferences['download_content_path'],
+                                     folder_name,
+                                     file_name)) as f:
+        f.write(content)
+        f.close()
+
+
+def download_attachment_to_letter(letter):
+    pass
+    # TODO Download Attachments Of Letter
+
+
+def download(letter, download_pdf=False, download_content=False, download_excel=False, download_attachment=False):
+    if download_pdf:
+        download_pdf_to_letter(letter)
+    if download_excel:
+        download_excel_to_letter(letter)
+    if download_content:
+        download_content_to_folder(letter)
+    if download_attachment:
+        download_attachment_to_letter(letter)
