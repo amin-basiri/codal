@@ -66,7 +66,7 @@ class DownloadAttachment(BooleanPreference):
 
 
 @global_preferences_registry.register
-class RemoveWord(StringPreference):
-    name = 'remove_word'
+class RemoveContentWord(StringPreference):
+    name = 'remove_content_word'
     default = "(اصلاحیه)*خلاصه"  # Must Separate With Start(*)
     required = False
