@@ -121,8 +121,12 @@ def process_content(content):
 
 
 def process_folder_name(name):
-    pass
-    # TODO Process Folder Name
+    global_preferences = global_preferences_registry.manager()
+    if global_preferences['replace_arabic_word_folder']:
+        name = replace_arabic_word(name)
+    if global_preferences['replace_arabic_number_folder']:
+        name = replace_arabic_number(name)
+    return name
 
 
 def process_file_name(name):
