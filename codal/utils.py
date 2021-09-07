@@ -91,9 +91,33 @@ def download_excel_to_letter(letter):
     letter.save()
 
 
+def replace_arabic_word(text):
+    text = text.replace('ي', 'ی')
+    text = text.replace('ك', 'ک')
+    return text
+
+
+def replace_arabic_number(text):
+    text = text.replace('۰', '0')
+    text = text.replace('۱', '1')
+    text = text.replace('۲', '2')
+    text = text.replace('۳', '3')
+    text = text.replace('۴', '4')
+    text = text.replace('۵', '5')
+    text = text.replace('۶', '6')
+    text = text.replace('۷', '7')
+    text = text.replace('۸', '8')
+    text = text.replace('۹', '9')
+    return text
+
+
 def process_content(content):
-    pass
-    # TODO Process Content Of Letter
+    global_preferences = global_preferences_registry.manager()
+    if global_preferences['replace_arabic_word_content']:
+        content = replace_arabic_word(content)
+    if global_preferences['replace_arabic_number_content']:
+        content = replace_arabic_number(content)
+    return content
 
 
 def process_folder_name(name):
