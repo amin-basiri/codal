@@ -86,8 +86,8 @@ def download_pdf_to_letter(letter):
 
 def download_excel_to_letter(letter):
     letter.excel = SimpleUploadedFile("{}-{}.xls".format(letter.symbol, letter.code),
-                                    processor.download(letter.excel_url),
-                                    content_type="application/vnd.ms-excel")
+                                      processor.download(letter.excel_url),
+                                      content_type="application/vnd.ms-excel")
     letter.save()
 
 
