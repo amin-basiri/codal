@@ -130,8 +130,13 @@ def process_folder_name(name):
 
 
 def process_file_name(name):
-    pass
-    # TODO Process File Name
+    global_preferences = global_preferences_registry.manager()
+    remove_text = global_preferences['remove_name_word'].split('*')
+
+    for text in remove_text:
+        name = name.replace(text, "")
+
+    return name
 
 
 def download_content_to_folder(letter):
