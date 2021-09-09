@@ -11,7 +11,6 @@ from codal import processor
 @shared_task()
 def update():
 
-    # TODO Handle Task
     # TODO Handle Attachment
     # TODO Add Signal To Set End Time For Task
     global_preferences = global_preferences_registry.manager()
@@ -47,6 +46,21 @@ def update():
         message=message,
         error=error
     )
+
+    if error:
+        Task.objects.get(
+            status=Task.Statuses.RUNNING,
+            type=Task.Types.RUNTIME,
+            task_type=Task.TaskTypes.UPDATE,
+            celery_id=processor.UPDATE_TASK_ID
+        ).set_erred()
+    else:
+        Task.objects.get(
+            status=Task.Statuses.RUNNING,
+            type=Task.Types.RUNTIME,
+            task_type=Task.TaskTypes.UPDATE,
+            celery_id=processor.UPDATE_TASK_ID
+        ).set_done()
 
     processor.UPDATE_TASK_ID = None
 
@@ -106,13 +120,15 @@ def download_retrieved_letter():
         Task.objects.get(
             status=Task.Statuses.RUNNING,
             type=Task.Types.RUNTIME,
-            task_type=Task.TaskTypes.DOWNLOAD
+            task_type=Task.TaskTypes.DOWNLOAD,
+            celery_id=processor.DOWNLOAD_TASK_ID
         ).set_erred()
     else:
         Task.objects.get(
             status=Task.Statuses.RUNNING,
             type=Task.Types.RUNTIME,
-            task_type=Task.TaskTypes.DOWNLOAD
+            task_type=Task.TaskTypes.DOWNLOAD,
+            celery_id=processor.DOWNLOAD_TASK_ID
         ).set_done()
 
     processor.DOWNLOAD_TASK_ID = None
