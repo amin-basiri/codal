@@ -3,7 +3,7 @@ import jdatetime
 from requests.exceptions import RequestException
 from dynamic_preferences.registries import global_preferences_registry
 
-from codal.models import Log, Letter
+from codal.models import Log, Letter, Task, Attachment
 from codal.utils import update, jalali_datetime_to_structured_string, download
 from codal import processor
 
@@ -11,6 +11,9 @@ from codal import processor
 @shared_task()
 def update():
 
+    # TODO Handle Task
+    # TODO Handle Attachment
+    # TODO Add Signal To Set End Time For Task
     global_preferences = global_preferences_registry.manager()
 
     now = jdatetime.datetime.now()
@@ -19,7 +22,7 @@ def update():
         last_letter_datetime = Letter.objects.latest('publish_datetime').publish_datetime
 
         Log.objects.create(
-            type=Log.TYPES.INFO,
+            type=Log.Types.INFO,
             message="بروزرسانی گزارشات شروع شد.",
             error=""
         )
@@ -40,7 +43,7 @@ def update():
         global_preferences['update_from_date'] = jalali_datetime_to_structured_string(now)
 
     Log.objects.create(
-        type=Log.TYPES.ERROR if error else Log.TYPES.SUCCESS,
+        type=Log.Types.ERROR if error else Log.Types.SUCCESS,
         message=message,
         error=error
     )
@@ -51,12 +54,12 @@ def update():
 @shared_task
 def download_retrieved_letter():
     Log.objects.create(
-        type=Log.TYPES.INFO,
+        type=Log.Types.INFO,
         message="دانلود گزارشات دانلود نشده شروع شد.",
         error=""
     )
 
-    un_downloaded_letters = Letter.objects.filter(status=Letter.STATUSES.RETRIEVED)
+    un_downloaded_letters = Letter.objects.filter(status=Letter.Statuses.RETRIEVED)
 
     global_preferences = global_preferences_registry.manager()
     download_pdf_pref = global_preferences['download_pdf']
@@ -86,11 +89,30 @@ def download_retrieved_letter():
         error = ""
 
     Log.objects.create(
-        type=Log.TYPES.ERROR if error else Log.TYPES.SUCCESS,
+        type=Log.Types.ERROR if error else Log.Types.SUCCESS,
         message=message,
         error=error
     )
 
-    Letter.objects.filter(status=Letter.STATUSES.DOWNLOADING).update(status=Letter.STATUSES.RETRIEVED)
+    Letter.objects.filter(
+        status=Letter.Statuses.DOWNLOADING
+    ).update(status=Letter.Statuses.RETRIEVED)
+
+    Attachment.objects.filter(
+        status=Attachment.Statuses.DOWNLOADING
+    ).update(status=Attachment.Statuses.RETRIEVED)
+
+    if error:
+        Task.objects.get(
+            status=Task.Statuses.RUNNING,
+            type=Task.Types.RUNTIME,
+            task_type=Task.TaskTypes.DOWNLOAD
+        ).set_erred()
+    else:
+        Task.objects.get(
+            status=Task.Statuses.RUNNING,
+            type=Task.Types.RUNTIME,
+            task_type=Task.TaskTypes.DOWNLOAD
+        ).set_done()
 
     processor.DOWNLOAD_TASK_ID = None
