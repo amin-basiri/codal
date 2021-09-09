@@ -55,7 +55,7 @@ def download_retrieved_letter():
         message="دانلود گزارشات دانلود نشده شروع شد.",
         error=""
     )
-    # TODO Change State
+
     un_downloaded_letters = Letter.objects.filter(status=Letter.STATUSES.RETRIEVED)
 
     global_preferences = global_preferences_registry.manager()
@@ -66,6 +66,7 @@ def download_retrieved_letter():
 
     try:
         for letter in un_downloaded_letters:
+            letter.set_downloading()
             download(
                 letter,
                 download_pdf=download_pdf_pref and letter.has_pdf,
@@ -73,6 +74,7 @@ def download_retrieved_letter():
                 download_excel=download_excel_pref and letter.has_excel,
                 download_attachment=download_attachment_pref and letter.has_attachment
             )
+            letter.set_downloaded()
     except RequestException as e:
         message = "به دلیل اختلال در اینترنت , دانلود گزارشات دانلود نشده با خطا مواجه شد."
         error = str(e)
@@ -88,5 +90,7 @@ def download_retrieved_letter():
         message=message,
         error=error
     )
-    # TODO Change State
+
+    Letter.objects.filter(status=Letter.STATUSES.DOWNLOADING).update(status=Letter.STATUSES.RETRIEVED)
+
     processor.DOWNLOAD_TASK_ID = None
