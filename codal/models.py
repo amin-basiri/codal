@@ -19,6 +19,10 @@ class StatusMixin(models.Model):
 
     status = models.CharField(default=STATUSES.RETRIEVED, max_length=20, choices=STATUSES.CHOICES)
 
+    def set_retrieved(self):
+        self.status = self.STATUSES.RETRIEVED
+        self.save()
+
     def set_downloading(self):
         self.status = self.STATUSES.DOWNLOADING
         self.save()
