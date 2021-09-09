@@ -118,12 +118,10 @@ class Task(TimeStampedModel):
     class TaskTypes:
         DOWNLOAD = 'download'
         UPDATE = 'update'
-        DOWNLOAD_AND_UPDATE = 'download_and_update'
 
         CHOICES = (
             (DOWNLOAD, 'Download'),
             (UPDATE, 'Update'),
-            (DOWNLOAD_AND_UPDATE, 'Download And Update')
         )
 
     class Statuses:
