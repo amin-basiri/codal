@@ -4,7 +4,7 @@ from requests.exceptions import RequestException
 from dynamic_preferences.registries import global_preferences_registry
 
 from codal.models import Log, Letter
-from codal.utils import update, jalali_datetime_to_structured_string
+from codal.utils import update, jalali_datetime_to_structured_string, download
 from codal import processor
 
 
@@ -50,6 +50,12 @@ def update():
 
 @shared_task
 def download_retrieved_letter():
+    Log.objects.create(
+        type=Log.TYPES.INFO,
+        message="دانلود گزارشات دانلود نشده شروع شد.",
+        error=""
+    )
+
     un_downloaded_letters = Letter.objects.filter(status=Letter.STATUSES.RETRIEVED)
 
     global_preferences = global_preferences_registry.manager()
@@ -58,6 +64,29 @@ def download_retrieved_letter():
     download_excel_pref = global_preferences['download_excel']
     download_attachment_pref = global_preferences['download_attachment']
 
-    for letter in un_downloaded_letters:
-        pass
-        # TODO Call download Function In Utils.py
+    try:
+        for letter in un_downloaded_letters:
+            download(
+                letter,
+                download_pdf=download_pdf_pref and letter.has_pdf,
+                download_content=download_content_pref and letter.has_html,
+                download_excel=download_excel_pref and letter.has_excel,
+                download_attachment=download_attachment_pref and letter.has_attachment
+            )
+    except RequestException as e:
+        message = "به دلیل اختلال در اینترنت , دانلود گزارشات دانلود نشده با خطا مواجه شد."
+        error = str(e)
+    except Exception as e:
+        message = "دانلود گزارشات دانلود نشده با خطای نامعلومی مواجه شد"
+        error = str(e)
+    else:
+        message = "دانلود گزارشات دانلود نشده با موفقیت انجام شد"
+        error = ""
+
+    Log.objects.create(
+        type=Log.TYPES.ERROR if error else Log.TYPES.SUCCESS,
+        message=message,
+        error=error
+    )
+
+    processor.DOWNLOAD_TASK_ID = None
