@@ -61,6 +61,9 @@ class Letter(TimeStampedModel):
 
     xbrl_url = models.CharField(max_length=500, default="", null=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Log(TimeStampedModel):
 
