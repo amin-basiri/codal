@@ -121,7 +121,6 @@ class Attachment(TimeStampedModel, StatusMixin):
 
 
 class Task(TimeStampedModel, ErrorMixin):
-    # TODO Add Effected Number Field
     class TaskTypes:
         DOWNLOAD = 'download'
         UPDATE = 'update'
