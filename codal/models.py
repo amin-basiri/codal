@@ -19,8 +19,6 @@ class Letter(TimeStampedModel):
 
     attachment_url = models.CharField(max_length=500, default="", null=True)
 
-    attachment = models.FileField(upload_to='attachments/', default=None, null=True)
-
     company_name = models.CharField(max_length=100)
 
     excel_url = models.CharField(max_length=500, default="", null=True)
@@ -83,4 +81,11 @@ class Log(TimeStampedModel):
 
     error = models.CharField(default="", null=True, max_length=500)
 
-# TODO Add Attachment Model
+
+class Attachment(TimeStampedModel):
+
+    letter = models.ForeignKey(Letter, on_delete=models.CASCADE, related_name='attachments')
+
+    file = models.FileField(upload_to='attachments/', null=True, blank=True)
+
+    url = models.CharField(max_length=200, null=True, blank=True)
