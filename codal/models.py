@@ -33,6 +33,13 @@ class StatusMixin(models.Model):
         self.save(update_fields=['status'])
 
 
+class ErrorMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    error = models.CharField(default="", null=True, max_length=500)
+
+
 class Letter(TimeStampedModel, StatusMixin):
     # TODO Add Attachment Count Property
     attachment_url = models.CharField(max_length=500, default="", null=True)
@@ -83,7 +90,7 @@ class Letter(TimeStampedModel, StatusMixin):
         return self.title
 
 
-class Log(TimeStampedModel):
+class Log(TimeStampedModel, ErrorMixin):
 
     class Types:
         INFO = 'info'
@@ -100,8 +107,6 @@ class Log(TimeStampedModel):
 
     message = models.CharField(default="", null=True, max_length=100)
 
-    error = models.CharField(default="", null=True, max_length=500)
-
 
 class Attachment(TimeStampedModel, StatusMixin):
 
@@ -115,8 +120,7 @@ class Attachment(TimeStampedModel, StatusMixin):
         return self.letter.title
 
 
-class Task(TimeStampedModel):
-    # TODO Add Error Field
+class Task(TimeStampedModel, ErrorMixin):
     # TODO Add Effected Number Field
     class TaskTypes:
         DOWNLOAD = 'download'
