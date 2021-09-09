@@ -7,6 +7,7 @@ from django.utils.functional import cached_property
 from dynamic_preferences.registries import global_preferences_registry
 import time
 import requests
+from bs4 import BeautifulSoup
 
 
 class Processor:
@@ -20,6 +21,7 @@ class Processor:
         self.verify_ssl = False
         self.search_url = 'https://search.codal.ir/api/search/v2/q?PageNumber={page_number}&FromDate={from_date}'
         self.base_url = 'https://codal.ir/'
+        self.attachment_url = 'https://codal.ir/Reports/'
 
     @cached_property
     def session(self):
@@ -28,22 +30,24 @@ class Processor:
         })
         return self._session
 
-    def _search(self, page_number=1):
-        global_preferences = global_preferences_registry.manager()
+    def get(self, url):
         retry = 1
 
         while retry <= self.max_request_retry:
             try:
-                return self.session.get(self.search_url.format(
-                    page_number=page_number,
-                    from_date=global_preferences['update_from_date']
-                ), verify=self.verify_ssl).json()
+                return self.session.get(url, verify=self.verify_ssl)
             except requests.exceptions.RequestException as e:
                 if retry < self.max_request_retry:
                     time.sleep(self.retry_interval)
                     retry += 1
                 else:
                     raise e
+
+    def _search(self, page_number=1):
+        global_preferences = global_preferences_registry.manager()
+        return self.get(self.search_url.format(
+                    page_number=page_number,
+                    from_date=global_preferences['update_from_date'])).json()
 
     def download(self, url, return_text=False):
         retry = 1
@@ -67,6 +71,14 @@ class Processor:
 
     def get_letters(self, page_number):
         return self._search(page_number=page_number)['Letters']
+
+    def get_letter_attachments_url(self, letter):
+        if letter['HasAttachment']:
+            attachment_page = self.get(self.attachment_url + letter['AttachmentUrl']).text
+            soup = BeautifulSoup(attachment_page, 'html.parser')
+            # TODO Handle Attachment
+        else:
+            return []
 
 
 processor = Processor()

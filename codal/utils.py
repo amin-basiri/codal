@@ -6,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from dynamic_preferences.registries import global_preferences_registry
 
 from codal import processor
-from codal.models import Letter
+from codal.models import Letter, Attachment
 
 
 def serialize_instance(instance):
@@ -41,8 +41,9 @@ def update():
     while page <= max_page:
         letters = processor.get_letters(page)
         for letter in letters:
+            attachments = processor.get_letter_attachments_url(letter)
             try:
-                Letter.objects.create(
+                _letter = Letter.objects.create(
                     attachment_url=letter['AttachmentUrl'],
                     company_name=letter['CompanyName'],
                     excel_url=letter['ExcelUrl'],
@@ -63,6 +64,12 @@ def update():
                     url=letter['Url'],
                     xbrl_url=letter['XbrlUrl']
                 )
+
+                for url in attachments:
+                    Attachment.objects.create(
+                        url=url,
+                        letter=_letter
+                    )
             except IntegrityError as e:
                 continue
 
