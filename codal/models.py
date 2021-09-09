@@ -6,7 +6,7 @@ class StatusMixin(models.Model):
     class Meta:
         abstract = True
 
-    class STATUSES:
+    class Statuses:
         RETRIEVED = 'retrieved'
         DOWNLOADING = 'downloading'
         DOWNLOADED = 'downloaded'
@@ -17,18 +17,18 @@ class StatusMixin(models.Model):
             (DOWNLOADED, 'Downloaded')
         )
 
-    status = models.CharField(default=STATUSES.RETRIEVED, max_length=20, choices=STATUSES.CHOICES)
+    status = models.CharField(default=Statuses.RETRIEVED, max_length=20, choices=Statuses.CHOICES)
 
     def set_retrieved(self):
-        self.status = self.STATUSES.RETRIEVED
+        self.status = self.Statuses.RETRIEVED
         self.save()
 
     def set_downloading(self):
-        self.status = self.STATUSES.DOWNLOADING
+        self.status = self.Statuses.DOWNLOADING
         self.save()
 
     def set_downloaded(self):
-        self.status = self.STATUSES.DOWNLOADED
+        self.status = self.Statuses.DOWNLOADED
         self.save()
 
 
@@ -84,7 +84,7 @@ class Letter(TimeStampedModel, StatusMixin):
 
 class Log(TimeStampedModel):
 
-    class TYPES:
+    class Types:
         INFO = 'info'
         SUCCESS = 'success'
         ERROR = 'error'
@@ -95,7 +95,7 @@ class Log(TimeStampedModel):
             (ERROR, 'Error')
         )
 
-    type = models.CharField(default=TYPES.INFO, max_length=10, choices=TYPES.CHOICES)
+    type = models.CharField(default=Types.INFO, max_length=10, choices=Types.CHOICES)
 
     message = models.CharField(default="", null=True, max_length=100)
 
@@ -112,3 +112,62 @@ class Attachment(TimeStampedModel, StatusMixin):
 
     def __str__(self):
         return self.letter.title
+
+
+class Task(TimeStampedModel):
+    class TaskTypes:
+        DOWNLOAD = 'download'
+        UPDATE = 'update'
+        DOWNLOAD_AND_UPDATE = 'download_and_update'
+
+        CHOICES = (
+            (DOWNLOAD, 'Download'),
+            (UPDATE, 'Update'),
+            (DOWNLOAD_AND_UPDATE, 'Download And Update')
+        )
+
+    class Statuses:
+        CREATED = 'created'
+        RUNNING = 'running'
+        DONE = 'done'
+        ERRED = 'erred'
+
+        CHOICES = (
+            (CREATED, 'Created'),
+            (RUNNING, 'Running'),
+            (DONE, 'Done'),
+            (ERRED, 'Erred')
+        )
+
+    class Types:
+        RUNTIME = 'runtime'
+        SCHEDULED = 'scheduled'
+
+        CHOICES = (
+            (RUNTIME, 'Runtime'),
+            (SCHEDULED, 'Scheduled')
+        )
+
+    task_type = models.CharField(default=TaskTypes.UPDATE, max_length=30, choices=TaskTypes.CHOICES)
+
+    type = models.CharField(default=Types.RUNTIME, max_length=30, choices=Types.CHOICES)
+
+    status = models.CharField(default=Statuses.CREATED, max_length=30, choices=Statuses.CHOICES)
+
+    celery_id = models.IntegerField(default=0, null=True)
+
+    end = models.DateTimeField(null=True)
+
+    def set_erred(self):
+        self.status = self.Statuses.ERRED
+        self.save()
+
+    def set_running(self):
+        self.status = self.Statuses.RUNNING
+        self.save()
+
+    def set_done(self):
+        self.status = self.Statuses.DONE
+        self.save()
+
+
