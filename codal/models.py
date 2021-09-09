@@ -1,5 +1,6 @@
 from django.db import models, transaction
 from model_utils.models import TimeStampedModel
+from model_utils import FieldTracker
 
 
 class StatusMixin(models.Model):
@@ -116,7 +117,6 @@ class Attachment(TimeStampedModel, StatusMixin):
 
 class Task(TimeStampedModel):
     # TODO Add Error Field
-    # TODO Add Tracker Field
     # TODO Add Effected Number Field
     class TaskTypes:
         DOWNLOAD = 'download'
@@ -158,6 +158,8 @@ class Task(TimeStampedModel):
     celery_id = models.IntegerField(default=0, null=True)
 
     end = models.DateTimeField(null=True)
+
+    tracker = FieldTracker()
 
     def set_erred(self):
         self.status = self.Statuses.ERRED

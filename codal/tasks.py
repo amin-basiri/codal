@@ -2,20 +2,18 @@ from celery import shared_task
 import jdatetime
 from requests.exceptions import RequestException
 from dynamic_preferences.registries import global_preferences_registry
+from django.utils import timezone
 
 from codal.models import Log, Letter, Task, Attachment
 from codal import utils
 from codal import processor
-# TODO Add Task End Signal
+
 
 @shared_task()
 def update():
-
-
-    # TODO Add Signal To Set End Time For Task
     global_preferences = global_preferences_registry.manager()
 
-    now = jdatetime.datetime.now()
+    now = timezone.now()
 
     try:
         last_letter_datetime = Letter.objects.latest('publish_datetime').publish_datetime
@@ -29,7 +27,7 @@ def update():
         last_letter_datetime = None
 
     try:
-        utils.update(from_datetime=last_letter_datetime)
+        utils.update()
     except RequestException as e:
         message = "به دلیل اختلال در اینترنت , به روز رسانی با خطا مواجه شد"
         error = str(e)
@@ -39,7 +37,9 @@ def update():
     else:
         message = "به روز رسانی با موفقیت انجام شد"
         error = ""
-        global_preferences['update_from_date'] = utils.jalali_datetime_to_structured_string(now)
+        global_preferences['update_from_date'] = utils.jalali_datetime_to_structured_string(
+            jdatetime.datetime.fromgregorian(now)
+        )
 
     Log.objects.create(
         type=Log.Types.ERROR if error else Log.Types.SUCCESS,

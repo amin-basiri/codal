@@ -4,6 +4,7 @@ from django.db import IntegrityError
 import jdatetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 from dynamic_preferences.registries import global_preferences_registry
+from django.utils import timezone
 
 from codal import processor
 from codal.models import Letter, Attachment
@@ -30,7 +31,7 @@ def persian_string_datetime_to_datetime(persian_datetime):
         jd = jdatetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute, second=second)
         return jd.togregorian()
     except:
-        return jdatetime.datetime.now().togregorian()
+        return jdatetime.datetime.fromgregorian(timezone.now())
 
 
 def update():
