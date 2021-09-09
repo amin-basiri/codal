@@ -21,15 +21,15 @@ class StatusMixin(models.Model):
 
     def set_retrieved(self):
         self.status = self.Statuses.RETRIEVED
-        self.save()
+        self.save(update_fields=['status'])
 
     def set_downloading(self):
         self.status = self.Statuses.DOWNLOADING
-        self.save()
+        self.save(update_fields=['status'])
 
     def set_downloaded(self):
         self.status = self.Statuses.DOWNLOADED
-        self.save()
+        self.save(update_fields=['status'])
 
 
 class Letter(TimeStampedModel, StatusMixin):
@@ -161,14 +161,14 @@ class Task(TimeStampedModel):
 
     def set_erred(self):
         self.status = self.Statuses.ERRED
-        self.save()
+        self.save(update_fields=['status'])
 
     def set_running(self):
         self.status = self.Statuses.RUNNING
-        self.save()
+        self.save(update_fields=['status'])
 
     def set_done(self):
         self.status = self.Statuses.DONE
-        self.save()
+        self.save(update_fields=['status'])
 
 

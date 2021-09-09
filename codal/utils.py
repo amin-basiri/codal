@@ -85,12 +85,11 @@ def jalali_datetime_to_structured_string(jd):
 
 
 def download_pdf_to_letter(letter):
-    # TODO Save Specific Fields For All save()
     # TODO Check Download
     letter.pdf = SimpleUploadedFile("{}-{}.pdf".format(letter.symbol, letter.code),
                                     processor.download(letter.pdf_url),
                                     content_type="application/pdf")
-    letter.save()
+    letter.save(update_fields=['pdf'])
 
 
 def download_excel_to_letter(letter):
@@ -98,7 +97,7 @@ def download_excel_to_letter(letter):
     letter.excel = SimpleUploadedFile("{}-{}.xls".format(letter.symbol, letter.code),
                                       processor.download(letter.excel_url),
                                       content_type="application/vnd.ms-excel")
-    letter.save()
+    letter.save(update_fields=['excel'])
 
 
 def replace_arabic_word(text):
@@ -169,7 +168,11 @@ def download_attachment_to_letter(letter):
     # TODO Download Attachments Of Letter
 
 
-def download(letter, download_pdf=False, download_content=False, download_excel=False, download_attachment=False):
+def download(letter,
+             download_pdf=False,
+             download_content=False,
+             download_excel=False,
+             download_attachment=False):
     if download_pdf:
         download_pdf_to_letter(letter)
     if download_excel:
