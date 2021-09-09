@@ -92,3 +92,6 @@ class Attachment(TimeStampedModel):
     file = models.FileField(upload_to='attachments/', null=True, blank=True)
 
     url = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return self.letter.title
