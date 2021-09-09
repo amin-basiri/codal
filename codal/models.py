@@ -2,7 +2,9 @@ from django.db import models, transaction
 from model_utils.models import TimeStampedModel
 
 
-class Letter(TimeStampedModel):
+class StatusMixin(models.Model):
+    class Meta:
+        abstract = True
 
     class STATUSES:
         RETRIEVED = 'retrieved'
@@ -16,6 +18,17 @@ class Letter(TimeStampedModel):
         )
 
     status = models.CharField(default=STATUSES.RETRIEVED, max_length=20, choices=STATUSES.CHOICES)
+
+    def set_downloading(self):
+        self.status = self.STATUSES.DOWNLOADING
+        self.save()
+
+    def set_downloaded(self):
+        self.status = self.STATUSES.DOWNLOADED
+        self.save()
+
+
+class Letter(TimeStampedModel, StatusMixin):
 
     attachment_url = models.CharField(max_length=500, default="", null=True)
 
@@ -61,14 +74,6 @@ class Letter(TimeStampedModel):
 
     xbrl_url = models.CharField(max_length=500, default="", null=True)
 
-    def set_downloading(self):
-        self.status = self.STATUSES.DOWNLOADING
-        self.save()
-
-    def set_downloaded(self):
-        self.status = self.STATUSES.DOWNLOADED
-        self.save()
-
     def __str__(self):
         return self.title
 
@@ -93,7 +98,7 @@ class Log(TimeStampedModel):
     error = models.CharField(default="", null=True, max_length=500)
 
 
-class Attachment(TimeStampedModel):
+class Attachment(TimeStampedModel, StatusMixin):
 
     letter = models.ForeignKey(Letter, on_delete=models.CASCADE, related_name='attachments')
 
