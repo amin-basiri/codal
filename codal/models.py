@@ -61,6 +61,14 @@ class Letter(TimeStampedModel):
 
     xbrl_url = models.CharField(max_length=500, default="", null=True)
 
+    def set_downloading(self):
+        self.status = self.STATUSES.DOWNLOADING
+        self.save()
+
+    def set_downloaded(self):
+        self.status = self.STATUSES.DOWNLOADED
+        self.save()
+
     def __str__(self):
         return self.title
 
