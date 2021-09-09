@@ -78,6 +78,7 @@ def jalali_datetime_to_structured_string(jd):
 
 
 def download_pdf_to_letter(letter):
+    # TODO Check Download
     letter.pdf = SimpleUploadedFile("{}-{}.pdf".format(letter.symbol, letter.code),
                                     processor.download(letter.pdf_url),
                                     content_type="application/pdf")
@@ -85,6 +86,7 @@ def download_pdf_to_letter(letter):
 
 
 def download_excel_to_letter(letter):
+    # TODO Check Download
     letter.excel = SimpleUploadedFile("{}-{}.xls".format(letter.symbol, letter.code),
                                       processor.download(letter.excel_url),
                                       content_type="application/vnd.ms-excel")
@@ -154,6 +156,7 @@ def download_content_to_folder(letter):
 
 
 def download_attachment_to_letter(letter):
+    # TODO Check Download
     pass
     # TODO Download Attachments Of Letter
 

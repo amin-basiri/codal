@@ -17,3 +17,5 @@ class AttachmentAdmin(admin.ModelAdmin):
 admin.site.register(Letter, LetterAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
+
+# TODO Modify Admin And Add Actions And Tasks

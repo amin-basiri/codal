@@ -55,7 +55,7 @@ def download_retrieved_letter():
         message="دانلود گزارشات دانلود نشده شروع شد.",
         error=""
     )
-
+    # TODO Change State
     un_downloaded_letters = Letter.objects.filter(status=Letter.STATUSES.RETRIEVED)
 
     global_preferences = global_preferences_registry.manager()
@@ -88,5 +88,5 @@ def download_retrieved_letter():
         message=message,
         error=error
     )
-
+    # TODO Change State
     processor.DOWNLOAD_TASK_ID = None
