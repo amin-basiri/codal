@@ -6,7 +6,7 @@ from dynamic_preferences.registries import global_preferences_registry
 from codal.models import Log, Letter, Task, Attachment
 from codal.utils import update, jalali_datetime_to_structured_string, download
 from codal import processor
-
+# TODO Add Task End Signal
 
 @shared_task()
 def update():

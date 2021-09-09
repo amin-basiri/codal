@@ -19,3 +19,15 @@ admin.site.register(Log, LogAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
 
 # TODO Modify Admin And Add Actions And Tasks
+# TODO Add Specific User
+# TODO Unused Task Delete Action
+# TODO UPDATE Task
+# TODO Download All Letters Task
+# TODO Download Letter Action
+# TODO Admin Refresh Button
+# TODO Add Log Filters
+# TODO Add Letter Filter
+# TODO Add Task Filter
+# TODO Add Date Time Filter For Letters
+# TODO Disable Letter Deletion
+# TODO Just Can Delete Done Or Erred Tasks

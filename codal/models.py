@@ -33,7 +33,7 @@ class StatusMixin(models.Model):
 
 
 class Letter(TimeStampedModel, StatusMixin):
-
+    # TODO Add Attachment Count Property
     attachment_url = models.CharField(max_length=500, default="", null=True)
 
     company_name = models.CharField(max_length=100)
@@ -115,6 +115,9 @@ class Attachment(TimeStampedModel, StatusMixin):
 
 
 class Task(TimeStampedModel):
+    # TODO Add Error Field
+    # TODO Add Tracker Field
+    # TODO Add Effected Number Field
     class TaskTypes:
         DOWNLOAD = 'download'
         UPDATE = 'update'

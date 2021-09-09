@@ -77,3 +77,7 @@ class DownloadContentPath(StringPreference):
     name = 'download_content_path'
     default = '/Symbols'
     required = True
+
+# TODO Run Task In Specific Time
+# TODO Task Schedule
+# TODO Just One Download And One Upload Task
