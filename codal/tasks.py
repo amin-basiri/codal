@@ -8,7 +8,7 @@ from codal.models import Log, Letter, Task, Attachment
 from codal import utils
 from codal import processor
 
-
+# TODO Test
 @shared_task()
 def update():
     global_preferences = global_preferences_registry.manager()
@@ -64,7 +64,7 @@ def update():
 
     processor.UPDATE_TASK_ID = None
 
-
+# TODO Test
 @shared_task
 def download_retrieved_letter():
     Log.objects.create(
@@ -133,7 +133,7 @@ def download_retrieved_letter():
 
     processor.DOWNLOAD_TASK_ID = None
 
-
+# TODO Test
 @shared_task
 def download(serialized_letters):
     deserialized_letters = [utils.deserialize_instance(letter) for letter in serialized_letters]
