@@ -168,9 +168,10 @@ class Task(TimeStampedModel, ErrorMixin):
 
     tracker = FieldTracker()
 
-    def set_erred(self):
+    def set_erred(self, error):
         self.status = self.Statuses.ERRED
-        self.save(update_fields=['status'])
+        self.error = error
+        self.save(update_fields=['status', 'error'])
 
     def set_running(self):
         self.status = self.Statuses.RUNNING

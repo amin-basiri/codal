@@ -52,8 +52,8 @@ def update():
             status=Task.Statuses.RUNNING,
             type=Task.Types.RUNTIME,
             task_type=Task.TaskTypes.UPDATE,
-            celery_id=processor.UPDATE_TASK_ID
-        ).set_erred()
+            celery_id=processor.UPDATE_TASK_ID,
+        ).set_erred(error)
     else:
         Task.objects.get(
             status=Task.Statuses.RUNNING,
@@ -121,8 +121,8 @@ def download_retrieved_letter():
             status=Task.Statuses.RUNNING,
             type=Task.Types.RUNTIME,
             task_type=Task.TaskTypes.DOWNLOAD,
-            celery_id=processor.DOWNLOAD_TASK_ID
-        ).set_erred()
+            celery_id=processor.DOWNLOAD_TASK_ID,
+        ).set_erred(error)
     else:
         Task.objects.get(
             status=Task.Statuses.RUNNING,
