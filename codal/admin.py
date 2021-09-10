@@ -39,6 +39,7 @@ admin.site.register(Attachment, AttachmentAdmin)
 
 # TODO Modify Admin And Add Actions And Tasks
 # TODO Add Specific User
+# TODO Handle Permissions
 # TODO Unused Task Delete Action
 # TODO UPDATE Task
 # TODO Download All Letters Task
