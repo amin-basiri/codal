@@ -1,13 +1,6 @@
-from dynamic_preferences.types import StringPreference, BooleanPreference, BasePreferenceType
+from dynamic_preferences.types import StringPreference, BooleanPreference, TimePreference
 from dynamic_preferences.registries import global_preferences_registry
-from dynamic_preferences.serializers import time
-from django import forms
 import datetime
-
-
-class TimePreference(BasePreferenceType):
-    field_class = forms.TimeField
-    serializer = time
 
 
 @global_preferences_registry.register
