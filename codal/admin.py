@@ -18,12 +18,6 @@ class LetterAdmin(admin.ModelAdmin):
         tasks.download.delay(serialized_letters)
         self.message_user(request, "{} letters scheduled to download.".format(queryset.count()), messages.SUCCESS)
 
-    def get_actions(self, request):
-        actions = super().get_actions(request)
-        if 'delete_selected' in actions:
-            del actions['delete_selected']
-        return actions
-
 
 class LogAdmin(admin.ModelAdmin):
     list_display = ['message', 'type']
@@ -47,6 +41,7 @@ admin.site.register(Attachment, AttachmentAdmin)
 # TODO Add Letter Filter
 # TODO Add Task Filter
 # TODO Add Date Time Filter For Letters
+# TODO Disable Letter Deletion
 # TODO Just Can Delete Done Or Erred Tasks
 # TODO Download Each Part Of Letter Action
 # TODO Inline Attachments For Letter
