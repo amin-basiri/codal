@@ -1,5 +1,11 @@
-from dynamic_preferences.types import StringPreference, BooleanPreference
+from dynamic_preferences.types import StringPreference, BooleanPreference, BasePreferenceType
 from dynamic_preferences.registries import global_preferences_registry
+from django import forms
+import datetime
+
+
+class TimePreference(BasePreferenceType):
+    field_class = forms.TimeField
 
 
 @global_preferences_registry.register
@@ -77,6 +83,14 @@ class DownloadContentPath(StringPreference):
     name = 'download_content_path'
     default = '/Symbols'
     required = True
+
+
+@global_preferences_registry.register
+class DownloadSchedule(TimePreference):
+    name = 'download_schedule'
+    default = datetime.time(15, 0, 0)
+    required = False
+
 
 # TODO Run Task In Specific Time
 # TODO Task Schedule Field
