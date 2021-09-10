@@ -18,6 +18,12 @@ class LetterAdmin(admin.ModelAdmin):
         tasks.download.delay(serialized_letters)
         self.message_user(request, "{} letters scheduled to download.".format(queryset.count()), messages.SUCCESS)
 
+        # def get_actions(self, request):
+        #     actions = super().get_actions(request)
+        #     if 'delete_selected' in actions:
+        #         del actions['delete_selected']
+        #     return actions
+
 
 class LogAdmin(admin.ModelAdmin):
     list_display = ['message', 'type']
