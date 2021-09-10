@@ -17,14 +17,14 @@ def update():
 
     try:
         last_letter_datetime = Letter.objects.latest('publish_datetime').publish_datetime
-
-        Log.objects.create(
-            type=Log.Types.INFO,
-            message="بروزرسانی گزارشات شروع شد.",
-            error=""
-        )
     except Letter.DoesNotExist:
         last_letter_datetime = None
+
+    Log.objects.create(
+        type=Log.Types.INFO,
+        message="بروزرسانی گزارشات شروع شد.",
+        error=""
+    )
 
     try:
         utils.update()
