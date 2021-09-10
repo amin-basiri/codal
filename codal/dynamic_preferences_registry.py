@@ -87,6 +87,8 @@ class DownloadSchedule(TimePreference):
     required = False
 
 
-# TODO Run Task In Specific Time
-# TODO Task Schedule Field
-# TODO Just One Download And One Upload Task
+@global_preferences_registry.register
+class UpdateSchedule(TimePreference):
+    name = 'update_schedule'
+    default = datetime.time(14, 0, 0)
+    required = False
