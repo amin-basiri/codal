@@ -169,9 +169,13 @@ def download_content_to_folder(letter):
 
 def download_attachment_to_letter(letter):
     for attachment in letter.attachments.filter(status=Attachment.Statuses.RETRIEVED):
+        attachment.set_downloading()
+
         attachment = processor.download(letter.pdf_url)
         attachment.file = SimpleUploadedFile(attachment[0], attachment[1])
         attachment.save(update_fields=['file'])
+
+        attachment.set_retrieved()
 
 
 def download(letter,
