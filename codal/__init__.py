@@ -7,6 +7,7 @@ from django.utils.functional import cached_property
 from dynamic_preferences.registries import global_preferences_registry
 import time
 import requests
+import re
 from bs4 import BeautifulSoup
 
 
@@ -49,7 +50,7 @@ class Processor:
                     page_number=page_number,
                     from_date=global_preferences['update_from_date'])).json()
 
-    def download(self, url, return_text=False):
+    def download(self, url, return_text=False, return_attachment_filename=False):
         retry = 1
 
         while retry <= self.max_request_retry:
@@ -64,6 +65,9 @@ class Processor:
 
             if return_text:
                 return response.text
+            elif return_attachment_filename:
+                file_name = re.findall("filename=(.+)", response.headers['content-disposition'])[0]
+                return file_name.encode('iso8859-1').decode('utf-8'), response.content
             return response.content
 
     def get_max_page(self,):

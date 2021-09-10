@@ -32,3 +32,4 @@ admin.site.register(Attachment, AttachmentAdmin)
 # TODO Disable Letter Deletion
 # TODO Just Can Delete Done Or Erred Tasks
 # TODO Download Each Part Of Letter Action
+# TODO Inline Attachments For Letter

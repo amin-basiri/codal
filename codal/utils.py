@@ -168,9 +168,10 @@ def download_content_to_folder(letter):
 
 
 def download_attachment_to_letter(letter):
-    # TODO Check Download
-    pass
-    # TODO Download Attachments Of Letter
+    for attachment in letter.attachments.filter(status=Attachment.Statuses.RETRIEVED):
+        attachment = processor.download(letter.pdf_url)
+        attachment.file = SimpleUploadedFile(attachment[0], attachment[1])
+        attachment.save(update_fields=['file'])
 
 
 def download(letter,
