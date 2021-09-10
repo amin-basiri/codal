@@ -1,9 +1,20 @@
 from django.contrib import admin
+
 from codal.models import Letter, Log, Attachment
+from codal.utils import serialize_instance
+from codal import utils, tasks
 
 
 class LetterAdmin(admin.ModelAdmin):
     list_display = ['title', 'symbol', 'status']
+    ordering = ['publish_datetime']
+    actions = ['download']
+
+    def download(self, request, queryset):
+        serialized_letters = [serialize_instance(letter) for letter in queryset
+                              if letter.status == Letter.Statuses.RETRIEVED]
+
+        tasks.download.delay(serialized_letters)
 
 
 class LogAdmin(admin.ModelAdmin):
@@ -23,7 +34,6 @@ admin.site.register(Attachment, AttachmentAdmin)
 # TODO Unused Task Delete Action
 # TODO UPDATE Task
 # TODO Download All Letters Task
-# TODO Download Letter Action
 # TODO Admin Refresh Button
 # TODO Add Log Filters
 # TODO Add Letter Filter

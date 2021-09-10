@@ -132,3 +132,54 @@ def download_retrieved_letter():
         ).set_done()
 
     processor.DOWNLOAD_TASK_ID = None
+
+
+@shared_task
+def download(serialized_letters):
+    deserialized_letters = [utils.deserialize_instance(letter) for letter in serialized_letters]
+
+    global_preferences = global_preferences_registry.manager()
+    download_pdf_pref = global_preferences['download_pdf']
+    download_content_pref = global_preferences['download_content']
+    download_excel_pref = global_preferences['download_excel']
+    download_attachment_pref = global_preferences['download_attachment']
+
+    for letter in deserialized_letters:
+        Log.objects.create(
+            type=Log.Types.INFO,
+            message="دانلود گزارش با شماره پیگیری {tracing_no} شروع شد.".format(tracing_no=letter.tracing_no),
+            error=""
+        )
+
+        try:
+            letter.set_downloading()
+            utils.download(
+                letter,
+                download_pdf=download_pdf_pref and letter.has_pdf,
+                download_content=download_content_pref and letter.has_html,
+                download_excel=download_excel_pref and letter.has_excel,
+                download_attachment=download_attachment_pref and letter.has_attachment
+            )
+            letter.set_downloaded()
+        except RequestException as e:
+            message = "به دلیل اختلال در اینترنت , دانلود گزارش با شماره پیگیری {tracing_no} با خطا مواجه شد.".format(
+                tracing_no=letter.tracing_no
+            )
+            error = str(e)
+        except Exception as e:
+            message = "دانلود گزارش با شماره پیگیری {tracing_no} با خطای نامعلومی مواجه شد."
+            error = str(e)
+        else:
+            message = "دانلود گزارش با شماره پیگیری {tracing_no} با موفقیت انجام شد."
+            error = ""
+
+        Log.objects.create(
+            type=Log.Types.ERROR if error else Log.Types.SUCCESS,
+            message=message,
+            error=error
+        )
+
+        if letter.status == Letter.Statuses.DOWNLOADING:
+            letter.set_retrieved()
+            for attachment in letter.attachments.filter(status=Attachment.Statuses.DOWNLOADING):
+                attachment.set_retrieved()
