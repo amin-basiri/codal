@@ -41,7 +41,7 @@ class ErrorMixin(models.Model):
 
 
 class Letter(TimeStampedModel, StatusMixin):
-    # TODO Add Attachment Count Property
+
     attachment_url = models.CharField(max_length=500, default="", null=True)
 
     company_name = models.CharField(max_length=100)
@@ -88,6 +88,10 @@ class Letter(TimeStampedModel, StatusMixin):
 
     def __str__(self):
         return self.title
+
+    @property
+    def attachment_count(self):
+        return self.attachments.count()
 
 
 class Log(TimeStampedModel, ErrorMixin):
