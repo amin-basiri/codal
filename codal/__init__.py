@@ -74,9 +74,13 @@ class Processor:
 
     def get_letter_attachments_url(self, letter):
         if letter['HasAttachment']:
+            urls = []
             attachment_page = self.get(self.attachment_url + letter['AttachmentUrl']).text
             soup = BeautifulSoup(attachment_page, 'html.parser')
-            # TODO Handle Attachment
+            for tr in soup.select("table table table tr[onclick]"):
+                action = tr['onclick']
+                urls.append(action[13:action.find("')")])
+            return urls
         else:
             return []
 
