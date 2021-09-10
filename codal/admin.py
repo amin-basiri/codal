@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib import messages
 
 from codal.models import Letter, Log, Attachment
 from codal.utils import serialize_instance
@@ -15,6 +16,7 @@ class LetterAdmin(admin.ModelAdmin):
                               if letter.status == Letter.Statuses.RETRIEVED]
 
         tasks.download.delay(serialized_letters)
+        self.message_user(request, "{} letters scheduled to download.".format(queryset.count()), messages.SUCCESS)
 
 
 class LogAdmin(admin.ModelAdmin):
