@@ -41,8 +41,8 @@ admin.site.register(Attachment, AttachmentAdmin)
 # TODO Add Specific User
 # TODO Handle Permissions
 # TODO Unused Task Delete Action
-# TODO UPDATE Task
-# TODO Download All Letters Task
+# TODO UPDATE Task Handle Just One Task
+# TODO Download All Letters Task Handle Just One Task
 # TODO Admin Refresh Button
 # TODO Add Log Filters
 # TODO Add Letter Filter
