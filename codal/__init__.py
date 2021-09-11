@@ -8,7 +8,9 @@ import time
 import requests
 import re
 from bs4 import BeautifulSoup
-from .celery import app
+from .celery import app as celery_app
+
+__all__ = ('celery_app',)
 
 
 class Processor:
