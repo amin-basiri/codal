@@ -42,11 +42,12 @@ class LetterAdmin(admin.ModelAdmin):
         return urls + super(LetterAdmin, self).get_urls()
 
     def update(self, request):
+        tasks.update.delay()
         self.message_user(request, "Update Scheduled.", messages.SUCCESS)
         return redirect(reverse('admin:codal_letter_changelist'))
 
-
     def download_all(self, request):
+        tasks.download_retrieved_letter.delay()
         self.message_user(request, "Download Retrieved Letters Scheduled.", messages.SUCCESS)
         return redirect(reverse('admin:codal_letter_changelist'))
 

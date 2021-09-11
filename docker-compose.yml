@@ -28,7 +28,10 @@ services:
   redis:
     container_name: redis
     image: bitnami/redis:latest # After 6.0.15
-    env_file: .env
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+    - "6379:6379"  # TODO Delete When Web Created
 
 
 volumes:
