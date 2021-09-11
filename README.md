@@ -17,6 +17,17 @@ To run application just run above command
 docker-compose up -d
 ```
 
+## Check
+To check celery
+```python
+celery -A codal worker -l info
+```
+
+To check redis
+```python
+docker exec -it redis redis-cli ping
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
