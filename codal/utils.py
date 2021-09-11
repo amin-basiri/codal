@@ -35,12 +35,14 @@ def persian_string_datetime_to_datetime(persian_datetime):
 
 
 def update():
+    global_preferences = global_preferences_registry.manager()
+    update_from_date = global_preferences['update_from_date']
 
-    max_page = processor.get_max_page()
+    max_page = processor.get_max_page(update_from_date=update_from_date)
     page = 1
 
     while page <= max_page:
-        letters = processor.get_letters(page)
+        letters = processor.get_letters(page, update_from_date=update_from_date)
         for letter in letters:
             attachments = processor.get_letter_attachments_url(letter)
             try:

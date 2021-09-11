@@ -3,7 +3,6 @@ from __future__ import absolute_import
 # This will make sure the app is always imported when
 # Django starts so that shared_task will use this app.
 from django.utils.functional import cached_property
-from dynamic_preferences.registries import global_preferences_registry
 import time
 import requests
 import re
@@ -46,11 +45,10 @@ class Processor:
                 else:
                     raise e
 
-    def _search(self, page_number=1):
-        global_preferences = global_preferences_registry.manager()
+    def _search(self, page_number=1, update_from_date=""):
         return self.get(self.search_url.format(
                     page_number=page_number,
-                    from_date=global_preferences['update_from_date'])).json()
+                    from_date=update_from_date)).json()
 
     def download(self, url, return_text=False, return_attachment_filename=False):
         retry = 1
@@ -72,11 +70,11 @@ class Processor:
                 return file_name.encode('iso8859-1').decode('utf-8'), response.content
             return response.content
 
-    def get_max_page(self,):
-        return self._search()['Page']
+    def get_max_page(self, update_from_date=""):
+        return self._search(update_from_date=update_from_date)['Page']
 
-    def get_letters(self, page_number):
-        return self._search(page_number=page_number)['Letters']
+    def get_letters(self, page_number, update_from_date):
+        return self._search(page_number=page_number, update_from_date=update_from_date)['Letters']
 
     def get_letter_attachments_url(self, letter):
         if letter['HasAttachment']:

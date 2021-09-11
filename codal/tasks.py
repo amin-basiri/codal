@@ -115,20 +115,20 @@ def download_retrieved_letter():
         status=Attachment.Statuses.DOWNLOADING
     ).update(status=Attachment.Statuses.RETRIEVED)
 
-    if error:
-        Task.objects.get(
-            status=Task.Statuses.RUNNING,
-            type=Task.Types.RUNTIME,
-            task_type=Task.TaskTypes.DOWNLOAD,
-            celery_id=processor.DOWNLOAD_TASK_ID,
-        ).set_erred(error)
-    else:
-        Task.objects.get(
-            status=Task.Statuses.RUNNING,
-            type=Task.Types.RUNTIME,
-            task_type=Task.TaskTypes.DOWNLOAD,
-            celery_id=processor.DOWNLOAD_TASK_ID
-        ).set_done()
+    # if error:
+    #     Task.objects.get(
+    #         status=Task.Statuses.RUNNING,
+    #         type=Task.Types.RUNTIME,
+    #         task_type=Task.TaskTypes.DOWNLOAD,
+    #         celery_id=processor.DOWNLOAD_TASK_ID,
+    #     ).set_erred(error)
+    # else:
+    #     Task.objects.get(
+    #         status=Task.Statuses.RUNNING,
+    #         type=Task.Types.RUNTIME,
+    #         task_type=Task.TaskTypes.DOWNLOAD,
+    #         celery_id=processor.DOWNLOAD_TASK_ID
+    #     ).set_done()
 
     processor.DOWNLOAD_TASK_ID = None
 
