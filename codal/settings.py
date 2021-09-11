@@ -163,7 +163,7 @@ DYNAMIC_PREFERENCES = {
 
 
 # CELERY STUFF
-BROKER_URL = 'redis://user:password@redishost:6379/0'
+BROKER_URL = 'redis://root:password@redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
