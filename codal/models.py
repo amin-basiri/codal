@@ -68,9 +68,9 @@ class Letter(TimeStampedModel, StatusMixin):
 
     pdf_url = models.CharField(max_length=500, default="", null=True)
 
-    publish_datetime = models.DateTimeField()
+    publish_datetime = models.DateTimeField()  # TODO Use JalaliDateTime
 
-    sent_datetime = models.DateTimeField()
+    sent_datetime = models.DateTimeField()  # TODO Use JalaliDateTime
 
     symbol = models.CharField(max_length=100)
 
@@ -164,7 +164,7 @@ class Task(TimeStampedModel, ErrorMixin):
 
     celery_id = models.IntegerField(default=0, null=True)
 
-    end = models.DateTimeField(null=True)
+    end = models.DateTimeField(null=True)  # TODO Use JalaliDateTime
 
     tracker = FieldTracker()
 
