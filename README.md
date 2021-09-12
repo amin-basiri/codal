@@ -21,6 +21,7 @@ docker-compose up -d
 To check celery
 ```python
 celery -A codal worker -l info
+celery -A codal beat -l info
 ```
 
 To check redis
