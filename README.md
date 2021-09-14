@@ -24,6 +24,12 @@ celery -A codal worker -l info
 celery -A codal beat -l info
 ```
 
+## Purge Celery
+To clear all pending celery tasks
+```python
+celery -A codal purge
+```
+
 To check redis
 ```python
 docker exec -it redis redis-cli ping
