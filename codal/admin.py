@@ -48,8 +48,15 @@ class LetterAdmin(admin.ModelAdmin):
         return redirect(reverse('admin:codal_letter_changelist'))
 
     def download_all(self, request):
+        if Task.objects.filter(task_type=Task.TaskTypes.DOWNLOAD, status=Task.Statuses.RUNNING).exists():
+            self.message_user(request, "There Is A Download Task Already.", messages.ERROR)
+        Task.objects.create(
+            type=Task.Types.RUNTIME,
+            task_type=Task.TaskTypes.DOWNLOAD,
+            status=Task.Statuses.RUNNING,
+        )
         transaction.on_commit(lambda: tasks.download_retrieved_letter.delay())
-        self.message_user(request, "Download Retrieved Letters Scheduled.", messages.SUCCESS)
+        self.message_user(request, "Download Retrieved Letters Scheduled.", messages.INFO)
         return redirect(reverse('admin:codal_letter_changelist'))
 
     def changelist_view(self, request, extra_context=None):
