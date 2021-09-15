@@ -43,7 +43,7 @@ def update():
         message = "به روز رسانی با موفقیت انجام شد"
         error = ""
         global_preferences['update_from_date'] = utils.jalali_datetime_to_structured_string(
-            jdatetime.datetime.fromgregorian(now)
+            jdatetime.datetime.fromgregorian(year=now.year, month=now.month, day=now.day)
         )
 
     Log.objects.create(
