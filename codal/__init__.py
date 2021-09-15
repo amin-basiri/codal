@@ -15,7 +15,6 @@ __all__ = ('celery_app',)
 class Processor:
 
     def __init__(self):
-        self.DOWNLOAD_TASK_ID = None
         self.UPDATE_TASK_ID = None
         self._session = requests.session()
         self.max_request_retry = 5

@@ -8,6 +8,7 @@ from django.db import transaction
 from codal.models import Letter, Log, Attachment
 from codal.utils import serialize_instance
 from codal import utils, tasks
+from codal import processor
 
 
 class LetterAdmin(admin.ModelAdmin):
