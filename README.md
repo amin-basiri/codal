@@ -8,7 +8,6 @@ Run above commands to create network to use program
 
 ```bash
 docker network create codal_network
-docker volume create codal_db_volume
 ```
 
 ## Usage
@@ -18,7 +17,7 @@ docker-compose up -d
 ```
 
 ## Check
-To check celery
+To Run celery Workers
 ```python
 celery -A codal worker -l info
 celery -A codal beat -l info
