@@ -176,7 +176,8 @@ def download_attachment_to_letter(letter):
 
         attachment = processor.download(attachment.url, return_attachment_filename=True)
         attachment.file = SimpleUploadedFile(attachment[0], attachment[1])
-        attachment.save(update_fields=['file'])
+        attachment.name = attachment[0]
+        attachment.save(update_fields=['file', 'name'])
 
         attachment.set_downloaded()
 
