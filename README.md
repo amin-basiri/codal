@@ -19,8 +19,7 @@ docker-compose up -d
 ## Check
 To Run celery Workers
 ```python
-celery -A codal worker -l info
-celery -A codal beat -l info
+celery -A codal worker -l info -P solo
 ```
 
 ## Purge Celery
