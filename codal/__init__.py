@@ -22,6 +22,7 @@ class Processor:
         self.search_url = 'https://search.codal.ir/api/search/v2/q?PageNumber={page_number}&FromDate={from_date}'
         self.base_url = 'https://codal.ir/'
         self.attachment_url = 'https://codal.ir'
+        self.download_attachment_prefix = 'Reports/'
 
     @cached_property
     def session(self):

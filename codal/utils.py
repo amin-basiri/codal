@@ -174,11 +174,11 @@ def download_attachment_to_letter(letter):
     for attachment in letter.attachments.filter(status=Attachment.Statuses.RETRIEVED):
         attachment.set_downloading()
 
-        attachment = processor.download(letter.pdf_url)
+        attachment = processor.download(attachment.url, return_attachment_filename=True)
         attachment.file = SimpleUploadedFile(attachment[0], attachment[1])
         attachment.save(update_fields=['file'])
 
-        attachment.set_retrieved()
+        attachment.set_downloaded()
 
 
 def download(letter,
