@@ -25,13 +25,13 @@ services:
 #    links:
 #      - db
 
-#  redis:
-#    container_name: redis
-#    image: bitnami/redis:latest # After 6.0.15
-#    environment:
-#      - ALLOW_EMPTY_PASSWORD=yes
-#    ports:
-#    - "6379:6379"  # TODO Delete When Web Created
+  redis:
+    container_name: redis
+    image: bitnami/redis:latest # After 6.0.15
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+    - "6379:6379"  # TODO Delete When Web Created
 
 
 volumes:
