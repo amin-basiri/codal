@@ -72,7 +72,7 @@ def update():
 # TODO Test
 @shared_task
 def download_retrieved_letter():
-    logger.info("salam ")
+    logger.info("********************************************* ")
     Log.objects.create(
         type=Log.Types.INFO,
         message="دانلود گزارشات دانلود نشده شروع شد.",
