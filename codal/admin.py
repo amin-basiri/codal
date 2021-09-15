@@ -5,10 +5,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.db import transaction
 
-from codal.models import Letter, Log, Attachment
+from codal.models import Letter, Log, Attachment, Task
 from codal.utils import serialize_instance
 from codal import utils, tasks
-from codal import processor
 
 
 class LetterAdmin(admin.ModelAdmin):
@@ -50,7 +49,6 @@ class LetterAdmin(admin.ModelAdmin):
 
     def download_all(self, request):
         transaction.on_commit(lambda: tasks.download_retrieved_letter.delay())
-        # tasks.download_retrieved_letter()
         self.message_user(request, "Download Retrieved Letters Scheduled.", messages.SUCCESS)
         return redirect(reverse('admin:codal_letter_changelist'))
 
@@ -86,9 +84,14 @@ class AttachmentAdmin(admin.ModelAdmin):
     list_display = ['letter', ]
 
 
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ['type', 'task_type', 'status', 'end']
+
+
 admin.site.register(Letter, LetterAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
+admin.site.register(Task, TaskAdmin)
 
 # TODO Modify Admin And Add Actions And Tasks
 # TODO Add Specific User
