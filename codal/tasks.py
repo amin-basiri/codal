@@ -56,17 +56,13 @@ def update():
             status=Task.Statuses.RUNNING,
             type=Task.Types.RUNTIME,
             task_type=Task.TaskTypes.UPDATE,
-            celery_id=processor.UPDATE_TASK_ID,
         ).set_erred(error)
     else:
         Task.objects.get(
             status=Task.Statuses.RUNNING,
             type=Task.Types.RUNTIME,
             task_type=Task.TaskTypes.UPDATE,
-            celery_id=processor.UPDATE_TASK_ID
         ).set_done()
-
-    processor.UPDATE_TASK_ID = None
 
 
 # TODO Test
