@@ -31,7 +31,8 @@ def persian_string_datetime_to_datetime(persian_datetime):
         jd = jdatetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute, second=second)
         return jd.togregorian()
     except:
-        return jdatetime.datetime.fromgregorian(timezone.now())
+        now = timezone.now()
+        return jdatetime.datetime.fromgregorian(year=now.year, month=now.month, day=now.day)
 
 
 def update():
