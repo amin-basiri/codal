@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 # TODO Test
+@shared_task
 def update():
     global_preferences = global_preferences_registry.manager()
 
@@ -26,7 +27,7 @@ def update():
 
     Log.objects.create(
         type=Log.Types.INFO,
-        message="بروزرسانی گزارشات شروع شد.",
+        message="بروزرسانی گزارشات شروع شد",
         error=""
     )
 

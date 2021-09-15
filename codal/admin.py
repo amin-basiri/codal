@@ -43,13 +43,22 @@ class LetterAdmin(admin.ModelAdmin):
         return urls + super(LetterAdmin, self).get_urls()
 
     def update(self, request):
-        tasks.update.delay()
-        self.message_user(request, "Update Scheduled.", messages.SUCCESS)
+        if Task.objects.filter(task_type=Task.TaskTypes.UPDATE, status=Task.Statuses.RUNNING).exists():
+            self.message_user(request, "There Is A Update Task Already.", messages.ERROR)
+            return redirect(reverse('admin:codal_letter_changelist'))
+        Task.objects.create(
+            type=Task.Types.RUNTIME,
+            task_type=Task.TaskTypes.UPDATE,
+            status=Task.Statuses.RUNNING,
+        )
+        transaction.on_commit(lambda: tasks.update.delay())
+        self.message_user(request, "Update Scheduled.", messages.INFO)
         return redirect(reverse('admin:codal_letter_changelist'))
 
     def download_all(self, request):
         if Task.objects.filter(task_type=Task.TaskTypes.DOWNLOAD, status=Task.Statuses.RUNNING).exists():
             self.message_user(request, "There Is A Download Task Already.", messages.ERROR)
+            return redirect(reverse('admin:codal_letter_changelist'))
         Task.objects.create(
             type=Task.Types.RUNTIME,
             task_type=Task.TaskTypes.DOWNLOAD,
