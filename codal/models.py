@@ -140,7 +140,6 @@ class Task(TimeStampedModel, ErrorMixin):
         ERRED = 'erred'
 
         CHOICES = (
-            (CREATED, 'Created'),
             (RUNNING, 'Running'),
             (DONE, 'Done'),
             (ERRED, 'Erred')
