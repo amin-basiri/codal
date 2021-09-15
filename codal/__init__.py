@@ -8,6 +8,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from .celery import app as celery_app
+import logging
 
 __all__ = ('celery_app',)
 
@@ -90,3 +91,9 @@ class Processor:
 
 
 processor = Processor()
+
+logging.basicConfig(filename="Logs.log",
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
