@@ -9,3 +9,6 @@ codal/migrations
 
 # log Files
 *.log
+
+# DB
+db
