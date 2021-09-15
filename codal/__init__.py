@@ -21,7 +21,7 @@ class Processor:
         self.verify_ssl = False
         self.search_url = 'https://search.codal.ir/api/search/v2/q?PageNumber={page_number}&FromDate={from_date}'
         self.base_url = 'https://codal.ir/'
-        self.attachment_url = 'https://codal.ir/Reports/'
+        self.attachment_url = 'https://codal.ir'
 
     @cached_property
     def session(self):
