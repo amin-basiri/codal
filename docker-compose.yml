@@ -8,7 +8,7 @@ services:
       - '3306:3306'
     env_file: .env
     volumes:
-      - codal_db_volume:/var/lib/mysql
+      - ./db:/var/lib/mysql
     networks:
       - codal_network
 
@@ -33,10 +33,6 @@ services:
     ports:
     - "6379:6379"  # TODO Delete When Web Created
 
-
-volumes:
-  codal_db_volume:
-    external: true
 
 networks:
   codal_network:
