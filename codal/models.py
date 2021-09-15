@@ -135,7 +135,6 @@ class Task(TimeStampedModel, ErrorMixin):
         )
 
     class Statuses:
-        CREATED = 'created'
         RUNNING = 'running'
         DONE = 'done'
         ERRED = 'erred'
@@ -160,7 +159,7 @@ class Task(TimeStampedModel, ErrorMixin):
 
     type = models.CharField(default=Types.RUNTIME, max_length=30, choices=Types.CHOICES)
 
-    status = models.CharField(default=Statuses.CREATED, max_length=30, choices=Statuses.CHOICES)
+    status = models.CharField(default=Statuses.RUNNING, max_length=30, choices=Statuses.CHOICES)
 
     end = models.DateTimeField(null=True)  # TODO Use JalaliDateTime
 
