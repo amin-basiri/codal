@@ -6,3 +6,6 @@ codal/migrations
 
 # dotenv
 .env
+
+# log Files
+*.log
