@@ -162,8 +162,6 @@ class Task(TimeStampedModel, ErrorMixin):
 
     status = models.CharField(default=Statuses.CREATED, max_length=30, choices=Statuses.CHOICES)
 
-    celery_id = models.IntegerField(default=0, null=True)
-
     end = models.DateTimeField(null=True)  # TODO Use JalaliDateTime
 
     tracker = FieldTracker()
