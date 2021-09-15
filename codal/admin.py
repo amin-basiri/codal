@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.conf.urls import url
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.db import transaction
 
 from codal.models import Letter, Log, Attachment
 from codal.utils import serialize_instance
@@ -47,7 +48,8 @@ class LetterAdmin(admin.ModelAdmin):
         return redirect(reverse('admin:codal_letter_changelist'))
 
     def download_all(self, request):
-        tasks.download_retrieved_letter.delay()
+        transaction.on_commit(lambda: tasks.download_retrieved_letter.delay())
+        # tasks.download_retrieved_letter()
         self.message_user(request, "Download Retrieved Letters Scheduled.", messages.SUCCESS)
         return redirect(reverse('admin:codal_letter_changelist'))
 
