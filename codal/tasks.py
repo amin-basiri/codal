@@ -172,3 +172,17 @@ def scheduled_update():
     )
 
     transaction.on_commit(lambda: update.delay())
+
+
+@shared_task
+def scheduled_download():
+    if Task.objects.filter(task_type=Task.TaskTypes.DOWNLOAD, status=Task.Statuses.RUNNING).exists():
+        return
+
+    Task.objects.create(
+        type=Task.Types.SCHEDULED,
+        task_type=Task.TaskTypes.DOWNLOAD,
+        status=Task.Statuses.RUNNING,
+    )
+
+    transaction.on_commit(lambda: download_retrieved_letter.delay())

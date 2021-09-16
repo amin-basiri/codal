@@ -40,10 +40,14 @@ def debug_task(self):
 #     )
 
 app.conf.beat_schedule = {
-    # Executes every Monday morning at 7:30 a.m.
     'update_letters': {
         'task': 'codal.tasks.scheduled_update',
         'schedule': crontab(hour=settings.UPDATE_TASK_HOUR, minute=settings.UPDATE_TASK_MINUTE),
+        'args': (),
+    },
+    'download_letters': {
+        'task': 'codal.tasks.scheduled_download',
+        'schedule': crontab(hour=settings.DOWNLOAD_TASK_HOUR, minute=settings.DOWNLOAD_TASK_MINUTE),
         'args': (),
     },
 }
