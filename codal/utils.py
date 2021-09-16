@@ -8,7 +8,8 @@ from django.utils import timezone
 from pathlib import Path
 
 from codal import processor
-from codal.models import Letter, Attachment
+from codal.models import Letter, Attachment, Task
+from codal import signals
 
 
 def serialize_instance(instance):
@@ -209,3 +210,19 @@ def download(letter,
         download_content_to_folder(letter)
     if download_attachment:
         download_attachment_to_letter(letter)
+
+
+def handle_task_complete(error, task_type):
+    current_task = Task.objects.get(status=Task.Statuses.RUNNING,
+                                    type=Task.Types.RUNTIME,
+                                    task_type=task_type, )
+
+    if error:
+        current_task.set_erred(error)
+    else:
+        current_task.set_done()
+
+    signals.task_done.send(
+        sender=Task,
+        task=current_task
+    )

@@ -8,7 +8,6 @@ import logging
 
 from codal.models import Log, Letter, Task, Attachment
 from codal import utils
-from codal import signals
 
 logger = logging.getLogger(__name__)
 
@@ -18,11 +17,6 @@ def update():
     global_preferences = global_preferences_registry.manager()
 
     now = timezone.now()
-
-    try:
-        last_letter_datetime = Letter.objects.latest('publish_datetime').publish_datetime
-    except Letter.DoesNotExist:
-        last_letter_datetime = None
 
     Log.objects.create(
         type=Log.Types.INFO,
@@ -51,22 +45,9 @@ def update():
         error=error
     )
 
-    current_task = Task.objects.get(status=Task.Statuses.RUNNING,
-                                    type=Task.Types.RUNTIME,
-                                    task_type=Task.TaskTypes.UPDATE,)
-
-    if error:
-        current_task.set_erred(error)
-    else:
-        current_task.set_done()
-
-    signals.task_done.send(
-        sender=Task,
-        task=current_task
-    )
+    utils.handle_task_complete(error, Task.TaskTypes.UPDATE)
 
 
-# TODO Test
 @shared_task
 def download_retrieved_letter():
     Log.objects.create(
@@ -118,18 +99,7 @@ def download_retrieved_letter():
         status=Attachment.Statuses.DOWNLOADING
     ).update(status=Attachment.Statuses.RETRIEVED)
 
-    if error:
-        Task.objects.get(
-            status=Task.Statuses.RUNNING,
-            type=Task.Types.RUNTIME,
-            task_type=Task.TaskTypes.DOWNLOAD,
-        ).set_erred(error)
-    else:
-        Task.objects.get(
-            status=Task.Statuses.RUNNING,
-            type=Task.Types.RUNTIME,
-            task_type=Task.TaskTypes.DOWNLOAD,
-        ).set_done()
+    utils.handle_task_complete(error, Task.TaskTypes.DOWNLOAD)
 
 
 @shared_task
