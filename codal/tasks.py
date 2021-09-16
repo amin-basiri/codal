@@ -1,10 +1,13 @@
 from celery import shared_task
-from celery.app.task import Task
+from codal.celery import app
+from celery.schedules import crontab
 import jdatetime
 from requests.exceptions import RequestException
 from dynamic_preferences.registries import global_preferences_registry
 from django.utils import timezone
 import logging
+from django.db import transaction
+from django.conf import settings
 
 from codal.models import Log, Letter, Task, Attachment
 from codal import utils
@@ -155,3 +158,17 @@ def download(serialized_letters):
             letter.set_retrieved()
             for attachment in letter.attachments.filter(status=Attachment.Statuses.DOWNLOADING):
                 attachment.set_retrieved()
+
+
+@shared_task
+def scheduled_update():
+    if Task.objects.filter(task_type=Task.TaskTypes.UPDATE, status=Task.Statuses.RUNNING).exists():
+        return
+
+    Task.objects.create(
+        type=Task.Types.SCHEDULED,
+        task_type=Task.TaskTypes.UPDATE,
+        status=Task.Statuses.RUNNING,
+    )
+
+    transaction.on_commit(lambda: update.delay())

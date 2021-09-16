@@ -1,5 +1,6 @@
 import os
-
+from celery.schedules import crontab
+from django.conf import settings
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
@@ -37,3 +38,12 @@ def debug_task(self):
 #         crontab(hour=download_time.hour, minute=download_time.minute),
 #         download_retrieved_letter.s()  # TODO Add Task To Log And Handle Task
 #     )
+
+app.conf.beat_schedule = {
+    # Executes every Monday morning at 7:30 a.m.
+    'update_letters': {
+        'task': 'codal.tasks.scheduled_update',
+        'schedule': crontab(hour=settings.UPDATE_TASK_HOUR, minute=settings.UPDATE_TASK_MINUTE),
+        'args': (),
+    },
+}

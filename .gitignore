@@ -18,3 +18,8 @@ pdfs
 excels
 Symbols
 attachments
+
+# Celery Beat Staff
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir

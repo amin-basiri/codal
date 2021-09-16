@@ -16,10 +16,15 @@ To run application just run above command
 docker-compose up -d
 ```
 
-## Check
-To Run celery Workers
+## Run Celery
+To Run Celery Workers
 ```python
 celery -A codal worker -l info -P solo
+```
+To Run Celery Beat
+To Run Celery Workers
+```python
+celery -A codal beat -l info
 ```
 
 ## Purge Celery

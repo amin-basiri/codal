@@ -78,17 +78,3 @@ class DownloadContentPath(StringPreference):
     name = 'download_content_path'
     default = 'Symbols'
     required = True
-
-
-@global_preferences_registry.register
-class DownloadSchedule(TimePreference):
-    name = 'download_schedule'
-    default = datetime.time(15, 0, 0)
-    required = False
-
-
-@global_preferences_registry.register
-class UpdateSchedule(TimePreference):
-    name = 'update_schedule'
-    default = datetime.time(14, 0, 0)
-    required = False

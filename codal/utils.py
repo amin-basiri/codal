@@ -214,7 +214,6 @@ def download(letter,
 
 def handle_task_complete(error, task_type):
     current_task = Task.objects.get(status=Task.Statuses.RUNNING,
-                                    type=Task.Types.RUNTIME,
                                     task_type=task_type, )
 
     if error:
