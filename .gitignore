@@ -12,3 +12,7 @@ codal/migrations
 
 # DB
 db
+
+# Files
+pdfs
+excels
