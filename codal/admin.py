@@ -4,6 +4,8 @@ from django.conf.urls import url
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.db import transaction
+from rangefilter.filters import DateTimeRangeFilter
+import datetime
 
 from codal.models import Letter, Log, Attachment, Task
 from codal.utils import serialize_instance
@@ -12,10 +14,15 @@ from codal import utils, tasks
 
 class LetterAdmin(admin.ModelAdmin):
     list_display = ['title', 'symbol', 'status']
-    ordering = ['publish_datetime']
+    ordering = ['-publish_datetime']
     search_fields = ['symbol']
+    list_filter = ['status', ('publish_datetime', DateTimeRangeFilter), ]
     actions = ['download']
+    date_hierarchy = 'publish_datetime'
     change_list_template = 'change_list.html'
+
+    def get_rangefilter_publish_datetime_title(self, request, field_path):
+        return 'Publish DateTime'
 
     def download(self, request, queryset):
         serialized_letters = [serialize_instance(letter) for letter in queryset
@@ -94,14 +101,32 @@ class LetterAdmin(admin.ModelAdmin):
 
 class LogAdmin(admin.ModelAdmin):
     list_display = ['message', 'created', 'type']
+    list_filter = ['type', ('created', DateTimeRangeFilter), ]
+    ordering = ['-created']
+    date_hierarchy = 'created'
+
+    def get_rangefilter_created_title(self, request, field_path):
+        return 'When Created'
 
 
 class AttachmentAdmin(admin.ModelAdmin):
     list_display = ['letter', 'status']
+    list_filter = ['status', ('created', DateTimeRangeFilter), ]
+    date_hierarchy = 'created'
+    ordering = ['-created']
+
+    def get_rangefilter_created_title(self, request, field_path):
+        return 'When Created'
 
 
 class TaskAdmin(admin.ModelAdmin):
     list_display = ['type', 'task_type', 'status', 'created', 'end']
+    list_filter = [('created', DateTimeRangeFilter), ]
+    date_hierarchy = 'created'
+    ordering = ['-created']
+
+    def get_rangefilter_created_title(self, request, field_path):
+        return 'When Created'
 
 
 admin.site.register(Letter, LetterAdmin)
@@ -118,7 +143,6 @@ admin.site.register(Task, TaskAdmin)
 # TODO Add Log Filters
 # TODO Add Letter Filter
 # TODO Add Task Filter
-# TODO Add Date Time Filter For Letters
 # TODO Disable Letter Deletion
 # TODO Just Can Delete Done Or Erred Tasks
 # TODO Download Each Part Of Letter Action
