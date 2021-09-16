@@ -13,6 +13,7 @@ from codal import utils, tasks
 class LetterAdmin(admin.ModelAdmin):
     list_display = ['title', 'symbol', 'status']
     ordering = ['publish_datetime']
+    search_fields = ['symbol']
     actions = ['download']
     change_list_template = 'change_list.html'
 
@@ -113,8 +114,6 @@ admin.site.register(Task, TaskAdmin)
 # TODO Add Specific User
 # TODO Handle Permissions
 # TODO Unused Task Delete Action
-# TODO UPDATE Task Handle Just One Task
-# TODO Download All Letters Task Handle Just One Task
 # TODO Admin Refresh Button
 # TODO Add Log Filters
 # TODO Add Letter Filter
