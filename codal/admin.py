@@ -134,6 +134,9 @@ class TaskAdmin(admin.ModelAdmin):
     def get_rangefilter_created_title(self, request, field_path):
         return 'When Created'
 
+    def delete_queryset(self, request, queryset):
+        queryset.exclude(status=Task.Statuses.RUNNING).delete()
+
 
 admin.site.site_header = "Codal Administration"
 admin.site.site_title = "Codal Admin"
@@ -149,6 +152,5 @@ admin.site.register(Task, TaskAdmin)
 # TODO Unused Task Delete Action
 # TODO Admin Refresh Button
 # TODO Disable Letter Deletion
-# TODO Just Can Delete Done Or Erred Tasks
 # TODO Download Each Part Of Letter Action
 # TODO Use Jalali DateTime Filtering
