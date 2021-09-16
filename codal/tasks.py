@@ -133,6 +133,7 @@ def download_retrieved_letter():
 
 
 # TODO Test
+@shared_task
 def download(serialized_letters):
     deserialized_letters = [utils.deserialize_instance(letter) for letter in serialized_letters]
 
@@ -145,7 +146,7 @@ def download(serialized_letters):
     for letter in deserialized_letters:
         Log.objects.create(
             type=Log.Types.INFO,
-            message="دانلود گزارش با شماره پیگیری {tracing_no} شروع شد.".format(tracing_no=letter.tracing_no),
+            message="دانلود گزارش با شماره پیگیری {tracing_no} شروع شد".format(tracing_no=letter.tracing_no),
             error=""
         )
 
@@ -160,15 +161,19 @@ def download(serialized_letters):
             )
             letter.set_downloaded()
         except RequestException as e:
-            message = "به دلیل اختلال در اینترنت , دانلود گزارش با شماره پیگیری {tracing_no} با خطا مواجه شد.".format(
+            message = "به دلیل اختلال در اینترنت , دانلود گزارش با شماره پیگیری {tracing_no} با خطا مواجه شد".format(
                 tracing_no=letter.tracing_no
             )
             error = str(e)
         except Exception as e:
-            message = "دانلود گزارش با شماره پیگیری {tracing_no} با خطای نامعلومی مواجه شد."
+            message = "دانلود گزارش با شماره پیگیری {tracing_no} با خطای نامعلومی مواجه شد".format(
+                tracing_no=letter.tracing_no
+            )
             error = str(e)
         else:
-            message = "دانلود گزارش با شماره پیگیری {tracing_no} با موفقیت انجام شد."
+            message = "دانلود گزارش با شماره پیگیری {tracing_no} با موفقیت انجام شد".format(
+                tracing_no=letter.tracing_no
+            )
             error = ""
 
         Log.objects.create(
