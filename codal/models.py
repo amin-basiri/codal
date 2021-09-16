@@ -93,6 +93,9 @@ class Letter(TimeStampedModel, StatusMixin):
     def attachment_count(self):
         return self.attachments.count()
 
+    class Meta:
+        verbose_name_plural = "Letters"
+
 
 class Log(TimeStampedModel, ErrorMixin):
 
@@ -111,6 +114,9 @@ class Log(TimeStampedModel, ErrorMixin):
 
     message = models.CharField(default="", null=True, max_length=100)
 
+    class Meta:
+        verbose_name_plural = "Logs"
+
 
 class Attachment(TimeStampedModel, StatusMixin):
 
@@ -124,6 +130,9 @@ class Attachment(TimeStampedModel, StatusMixin):
 
     def __str__(self):
         return self.letter.title
+
+    class Meta:
+        verbose_name_plural = "Attachments"
 
 
 class Task(TimeStampedModel, ErrorMixin):
@@ -178,5 +187,8 @@ class Task(TimeStampedModel, ErrorMixin):
     def set_done(self):
         self.status = self.Statuses.DONE
         self.save(update_fields=['status'])
+
+    class Meta:
+        verbose_name_plural = "Tasks"
 
 

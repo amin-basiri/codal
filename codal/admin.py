@@ -129,12 +129,15 @@ class TaskAdmin(admin.ModelAdmin):
         return 'When Created'
 
 
+admin.site.site_header = "Codal Administration"
+admin.site.site_title = "Codal Admin"
+admin.site.index_title = "Codal Admin"
 admin.site.register(Letter, LetterAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
 admin.site.register(Task, TaskAdmin)
 
-# TODO Customize Admin Template
+
 # TODO Modify Admin And Add Actions And Tasks
 # TODO Add Specific User
 # TODO Handle Permissions

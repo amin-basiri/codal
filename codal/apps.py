@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from django.db.models import signals
 from codal import signals as codal_signals
 
 
