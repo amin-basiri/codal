@@ -23,22 +23,6 @@ def debug_task(self):
     print(f'Request: {self.request!r}')
 
 
-# @app.on_after_fork.connect
-# def setup_periodic_tasks(sender, **kwargs):
-#     global_preferences = global_preferences_registry.manager()
-#     update_time = global_preferences['update_schedule']
-#     download_time = global_preferences['download_schedule']
-#
-#     sender.add_periodic_task(
-#         crontab(hour=update_time.hour, minute=update_time.minute),
-#         update.s()  # TODO Add Task To Log And Handle Task
-#     )
-#
-#     sender.add_periodic_task(
-#         crontab(hour=download_time.hour, minute=download_time.minute),
-#         download_retrieved_letter.s()  # TODO Add Task To Log And Handle Task
-#     )
-
 app.conf.beat_schedule = {
     'update_letters': {
         'task': 'codal.tasks.scheduled_update',
