@@ -5,6 +5,7 @@ import jdatetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 from dynamic_preferences.registries import global_preferences_registry
 from django.utils import timezone
+from pathlib import Path
 
 from codal import processor
 from codal.models import Letter, Attachment
@@ -163,7 +164,10 @@ def download_content_to_folder(letter):
     folder_name = process_folder_name(letter.symbol)
     file_name = process_file_name(letter.title)
 
-    with open('{}/{}/{}.html'.format(global_preferences['download_content_path'],
+    download_content_path = global_preferences['download_content_path']
+    Path("{}/{}".format(download_content_path, folder_name)).mkdir(parents=True, exist_ok=True)
+
+    with open('{}/{}/{}.html'.format(download_content_path,
                                      folder_name,
                                      file_name)) as f:
         f.write(content)
