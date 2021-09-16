@@ -5,11 +5,16 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.db import transaction
 from rangefilter.filters import DateTimeRangeFilter
-import datetime
+from django.forms.models import BaseInlineFormSet
 
 from codal.models import Letter, Log, Attachment, Task
 from codal.utils import serialize_instance
 from codal import utils, tasks
+
+
+class AttachmentInline(admin.TabularInline):
+    model = Attachment
+    exclude = ('url', )
 
 
 class LetterAdmin(admin.ModelAdmin):
@@ -20,6 +25,7 @@ class LetterAdmin(admin.ModelAdmin):
     actions = ['download']
     date_hierarchy = 'publish_datetime'
     change_list_template = 'change_list.html'
+    inlines = [AttachmentInline, ]
 
     def get_rangefilter_publish_datetime_title(self, request, field_path):
         return 'Publish DateTime'
@@ -143,9 +149,6 @@ admin.site.register(Task, TaskAdmin)
 # TODO Handle Permissions
 # TODO Unused Task Delete Action
 # TODO Admin Refresh Button
-# TODO Add Log Filters
-# TODO Add Letter Filter
-# TODO Add Task Filter
 # TODO Disable Letter Deletion
 # TODO Just Can Delete Done Or Erred Tasks
 # TODO Download Each Part Of Letter Action
