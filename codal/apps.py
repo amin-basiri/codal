@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from django.db.models import signals
+from codal import signals as codal_signals
 
 
 class CodalConfig(AppConfig):
@@ -9,7 +10,7 @@ class CodalConfig(AppConfig):
     def ready(self):
         from . import models, handlers
 
-        signals.post_save.connect(
+        codal_signals.task_done.connect(
             handlers.set_end_to_task,
             sender=models.Task,
             dispatch_uid='codal.set_end_to_task',

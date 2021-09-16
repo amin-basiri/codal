@@ -8,12 +8,11 @@ import logging
 
 from codal.models import Log, Letter, Task, Attachment
 from codal import utils
-from codal import processor
+from codal import signals
 
 logger = logging.getLogger(__name__)
 
 
-# TODO Test
 @shared_task
 def update():
     global_preferences = global_preferences_registry.manager()
@@ -52,18 +51,19 @@ def update():
         error=error
     )
 
+    current_task = Task.objects.get(status=Task.Statuses.RUNNING,
+                                    type=Task.Types.RUNTIME,
+                                    task_type=Task.TaskTypes.UPDATE,)
+
     if error:
-        Task.objects.get(
-            status=Task.Statuses.RUNNING,
-            type=Task.Types.RUNTIME,
-            task_type=Task.TaskTypes.UPDATE,
-        ).set_erred(error)
+        current_task.set_erred(error)
     else:
-        Task.objects.get(
-            status=Task.Statuses.RUNNING,
-            type=Task.Types.RUNTIME,
-            task_type=Task.TaskTypes.UPDATE,
-        ).set_done()
+        current_task.set_done()
+
+    signals.task_done.send(
+        sender=Task,
+        task=current_task
+    )
 
 
 # TODO Test
