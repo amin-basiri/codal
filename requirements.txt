@@ -11,7 +11,9 @@ click-didyoumean==0.0.3
 click-plugins==1.1.1
 click-repl==0.2.0
 Django==3.2.7
+django-admin-rangefilter==0.8.1
 django-dynamic-preferences==1.10.1
+django-model-utils==4.1.1
 idna==3.2
 jdatetime==3.6.2
 kombu==5.1.0
