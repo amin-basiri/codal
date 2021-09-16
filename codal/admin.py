@@ -93,7 +93,7 @@ class LetterAdmin(admin.ModelAdmin):
 
 
 class LogAdmin(admin.ModelAdmin):
-    list_display = ['message', 'type']
+    list_display = ['message', 'created', 'type']
 
 
 class AttachmentAdmin(admin.ModelAdmin):
