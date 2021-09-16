@@ -37,7 +37,7 @@ class ErrorMixin(models.Model):
     class Meta:
         abstract = True
 
-    error = models.CharField(default="", null=True, max_length=500)
+    error = models.CharField(default="", null=True, blank=True, max_length=500)
 
 
 class Letter(TimeStampedModel, StatusMixin):
@@ -162,7 +162,7 @@ class Task(TimeStampedModel, ErrorMixin):
 
     status = models.CharField(default=Statuses.RUNNING, max_length=30, choices=Statuses.CHOICES)
 
-    end = models.DateTimeField(null=True)  # TODO Use JalaliDateTime
+    end = models.DateTimeField(null=True, blank=True)  # TODO Use JalaliDateTime
 
     tracker = FieldTracker()
 
