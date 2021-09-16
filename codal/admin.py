@@ -100,7 +100,7 @@ class AttachmentAdmin(admin.ModelAdmin):
 
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ['type', 'task_type', 'status', 'end']
+    list_display = ['type', 'task_type', 'status', 'created', 'end']
 
 
 admin.site.register(Letter, LetterAdmin)
