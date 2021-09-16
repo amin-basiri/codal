@@ -19,8 +19,8 @@ class LetterAdmin(admin.ModelAdmin):
     def download(self, request, queryset):
         serialized_letters = [serialize_instance(letter) for letter in queryset
                               if letter.status == Letter.Statuses.RETRIEVED]
-
-        tasks.download.delay(serialized_letters)
+        tasks.download(serialized_letters)
+        # transaction.on_commit(lambda: tasks.download.delay(serialized_letters))
         self.message_user(request, "{} letters scheduled to download.".format(queryset.count()), messages.SUCCESS)
 
     # def get_actions(self, request):
@@ -97,7 +97,7 @@ class LogAdmin(admin.ModelAdmin):
 
 
 class AttachmentAdmin(admin.ModelAdmin):
-    list_display = ['letter', ]
+    list_display = ['letter', 'status']
 
 
 class TaskAdmin(admin.ModelAdmin):
@@ -109,6 +109,7 @@ admin.site.register(Log, LogAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
 admin.site.register(Task, TaskAdmin)
 
+# TODO Customize Admin Template
 # TODO Modify Admin And Add Actions And Tasks
 # TODO Add Specific User
 # TODO Handle Permissions
