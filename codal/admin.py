@@ -144,7 +144,6 @@ admin.site.register(Attachment, AttachmentAdmin)
 admin.site.register(Task, TaskAdmin)
 
 
-# TODO Modify Admin And Add Actions And Tasks
 # TODO Add Specific User
 # TODO Handle Permissions
 # TODO Unused Task Delete Action
@@ -152,5 +151,4 @@ admin.site.register(Task, TaskAdmin)
 # TODO Disable Letter Deletion
 # TODO Just Can Delete Done Or Erred Tasks
 # TODO Download Each Part Of Letter Action
-# TODO Inline Attachments For Letter
 # TODO Use Jalali DateTime Filtering
