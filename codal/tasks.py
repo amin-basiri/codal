@@ -132,7 +132,6 @@ def download_retrieved_letter():
         ).set_done()
 
 
-# TODO Test
 @shared_task
 def download(serialized_letters):
     deserialized_letters = [utils.deserialize_instance(letter) for letter in serialized_letters]

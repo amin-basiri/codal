@@ -19,8 +19,7 @@ class LetterAdmin(admin.ModelAdmin):
     def download(self, request, queryset):
         serialized_letters = [serialize_instance(letter) for letter in queryset
                               if letter.status == Letter.Statuses.RETRIEVED]
-        tasks.download(serialized_letters)
-        # transaction.on_commit(lambda: tasks.download.delay(serialized_letters))
+        transaction.on_commit(lambda: tasks.download.delay(serialized_letters))
         self.message_user(request, "{} letters scheduled to download.".format(queryset.count()), messages.SUCCESS)
 
     # def get_actions(self, request):

@@ -144,6 +144,9 @@ def process_folder_name(name):
         name = replace_arabic_word(name)
     if global_preferences['replace_arabic_number_folder']:
         name = replace_arabic_number(name)
+
+    name = name.replace('/', '-')
+
     return name
 
 
@@ -153,6 +156,8 @@ def process_file_name(name):
 
     for text in remove_text:
         name = name.replace(text, "")
+
+    name = name.replace('/', '-')
 
     return name
 
@@ -165,11 +170,16 @@ def download_content_to_folder(letter):
     file_name = process_file_name(letter.title)
 
     download_content_path = global_preferences['download_content_path']
-    Path("{}/{}".format(download_content_path, folder_name)).mkdir(parents=True, exist_ok=True)
+    folder_path = "{path}/{folder}/".format(
+        path=download_content_path,
+        folder=folder_name)
+    content_path = Path(folder_path)
+    content_path.mkdir(parents=True, exist_ok=True)
 
-    with open('{}/{}/{}.html'.format(download_content_path,
-                                     folder_name,
-                                     file_name)) as f:
+    file_path = '{file}.html'.format(file=file_name)
+    file_full_path = content_path / file_path
+
+    with file_full_path.open("w", encoding='utf-8') as f:
         f.write(content)
         f.close()
 
@@ -178,10 +188,10 @@ def download_attachment_to_letter(letter):
     for attachment in letter.attachments.filter(status=Attachment.Statuses.RETRIEVED):
         attachment.set_downloading()
 
-        attachment = processor.download(attachment.url, return_attachment_filename=True)
-        attachment.file = SimpleUploadedFile(attachment[0], attachment[1])
-        attachment.name = attachment[0]
-        attachment.save(update_fields=['file', 'name'])
+        attachment_content = processor.download(attachment.url, return_attachment_filename=True)
+        attachment.file = SimpleUploadedFile(attachment_content[0], attachment_content[1])
+        attachment.file_name = attachment_content[0]
+        attachment.save(update_fields=['file', 'file_name'])
 
         attachment.set_downloaded()
 

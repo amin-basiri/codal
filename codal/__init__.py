@@ -65,7 +65,7 @@ class Processor:
             if return_text:
                 return response.text
             elif return_attachment_filename:
-                file_name = re.findall("filename=(.+)", response.headers['content-disposition'])[0]
+                file_name = re.findall("filename=(.+)", response.headers.get('content-disposition', ""))[0]
                 return file_name.encode('iso8859-1').decode('utf-8'), response.content
             return response.content
 
@@ -82,7 +82,7 @@ class Processor:
             soup = BeautifulSoup(attachment_page, 'html.parser')
             for tr in soup.select("table table table tr[onclick]"):
                 action = tr['onclick']
-                urls.append(action[13:action.find("')")])
+                urls.append(self.download_attachment_prefix + action[13:action.find("')")])
             return urls
         else:
             return []
