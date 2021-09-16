@@ -51,8 +51,7 @@ class LetterAdmin(admin.ModelAdmin):
             task_type=Task.TaskTypes.UPDATE,
             status=Task.Statuses.RUNNING,
         )
-        tasks.update()
-        # transaction.on_commit(lambda: tasks.update.delay())
+        transaction.on_commit(lambda: tasks.update.delay())
         self.message_user(request, "Update Scheduled.", messages.INFO)
         return redirect(reverse('admin:codal_letter_changelist'))
 
