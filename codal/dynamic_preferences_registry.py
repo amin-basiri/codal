@@ -76,7 +76,7 @@ class RemoveNameWord(StringPreference):
 @global_preferences_registry.register
 class DownloadContentPath(StringPreference):
     name = 'download_content_path'
-    default = '/Symbols'
+    default = 'Symbols'
     required = True
 
 
