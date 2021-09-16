@@ -63,8 +63,7 @@ class LetterAdmin(admin.ModelAdmin):
             task_type=Task.TaskTypes.DOWNLOAD,
             status=Task.Statuses.RUNNING,
         )
-        tasks.download_retrieved_letter()
-        # transaction.on_commit(lambda: tasks.download_retrieved_letter.delay())
+        transaction.on_commit(lambda: tasks.download_retrieved_letter.delay())
         self.message_user(request, "Download Retrieved Letters Scheduled.", messages.INFO)
         return redirect(reverse('admin:codal_letter_changelist'))
 
