@@ -1,16 +1,14 @@
 version: '3.3'
 
 services:
-  db:
-    container_name: mysql_db
+  mysql-db:
+    container_name: mysql-db
     image: mysql:latest # After 8.0.26
     ports:
       - '3306:3306'
     env_file: .env
     volumes:
       - ./db:/var/lib/mysql
-    networks:
-      - codal_network
 
   web:
     container_name: web
@@ -47,7 +45,3 @@ services:
       - web
       - redis
 
-
-networks:
-  codal_network:
-    external: true

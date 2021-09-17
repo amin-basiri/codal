@@ -2,19 +2,18 @@
 
 Codal is a django website to dealing with codal.ir Letters
 
-## Installation
-
-Run above commands to create network to use program
-
-```bash
-docker network create codal_network
-```
 
 ## Usage
 To run application just run above command
 ```python
 docker-compose up -d
 ```
+To create a user and use codal administration
+```python
+docker exec -it web python manage.py createsuperuser
+```
+Then Enjoy Codal Administration In localhost
+
 
 ## Run Celery
 To Run Celery Workers
@@ -32,7 +31,7 @@ To clear all pending celery tasks
 celery -A codal purge
 ```
 
-To check redis
+## Check Redis
 ```python
 docker exec -it redis redis-cli ping
 ```

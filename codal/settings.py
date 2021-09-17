@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'codal-db',
         'USER': 'root',
         'PASSWORD': 'password',
-        'HOST': 'mysql_db',
+        'HOST': 'mysql-db',
         'PORT': 3306,
     }
 }
