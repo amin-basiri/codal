@@ -150,7 +150,6 @@ admin.site.register(Task, TaskAdmin)
 # TODO Add Specific User
 # TODO Handle Permissions
 # TODO Unused Task Delete Action
-# TODO Admin Refresh Button
 # TODO Disable Letter Deletion
 # TODO Download Each Part Of Letter Action
 # TODO Use Jalali DateTime Filtering
