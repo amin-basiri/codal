@@ -22,7 +22,6 @@ To Run Celery Workers
 celery -A codal worker -l info -P solo
 ```
 To Run Celery Beat
-To Run Celery Workers
 ```python
 celery -A codal beat -l info
 ```

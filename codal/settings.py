@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-&661%cyfj*e68-^(0kp=nqxv2+mg-q(uxug5^ke#$e8!(%ox*$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'codal-db',
         'USER': 'root',
         'PASSWORD': 'password',
-        'HOST': '127.0.0.1',  # TODO Change For Final Deploy To "db"
+        'HOST': 'mysql_db',
         'PORT': 3306,
     }
 }
@@ -163,8 +163,8 @@ DYNAMIC_PREFERENCES = {
 
 
 # CELERY STUFF
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_TIMEZONE = 'Asia/Tehran'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_ACKS_LATE = True
