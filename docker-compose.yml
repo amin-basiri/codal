@@ -31,6 +31,7 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
 
   celery:
+    container_name: celery
     build: .
     command: celery -A codal worker -l info -P solo --logfile=celery.log # Command used to start the Celery worker in the Docker container
     volumes:
@@ -44,4 +45,19 @@ services:
     depends_on:
       - web
       - redis
+
+  celery-beat:
+    container_name: celery-beat
+    build: .
+    command: celery -A codal beat -l info
+    volumes:
+      - .:/codal
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+      # depends on show that celery worker service requires the web service and the redis service to run
+    depends_on:
+      - celery
 
