@@ -29,8 +29,6 @@ services:
         condition: service_started
       celery-beat:
         condition: service_started
-    links:
-      - db
 
   redis:
     container_name: redis
