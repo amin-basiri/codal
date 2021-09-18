@@ -9,6 +9,10 @@ services:
     env_file: .env
     volumes:
       - ./db:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
 
   web:
     container_name: web
@@ -19,8 +23,12 @@ services:
     ports:
       - "80:8000"
     depends_on:
-      - db
-      - redis
+      mysql-db:
+        condition: service_healthy
+      celery:
+        condition: service_started
+      celery-beat:
+        condition: service_started
     links:
       - db
 
@@ -43,8 +51,10 @@ services:
       - CELERY_BACKEND=redis://redis:6379/0
       # depends on show that celery worker service requires the web service and the redis service to run
     depends_on:
-      - web
-      - redis
+      redis:
+        condition: service_started
+      mysql-db:
+        condition: service_healthy
 
   celery-beat:
     container_name: celery-beat
@@ -59,5 +69,8 @@ services:
       - CELERY_BACKEND=redis://redis:6379/0
       # depends on show that celery worker service requires the web service and the redis service to run
     depends_on:
-      - celery
+      mysql-db:
+        condition: service_healthy
+      celery:
+        condition: service_started
 
