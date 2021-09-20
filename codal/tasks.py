@@ -162,6 +162,10 @@ def download(serialized_letters):
 
 @shared_task
 def scheduled_update():
+    global_preferences = global_preferences_registry.manager()
+    if not global_preferences['update_schedule_enabled']:
+        return
+
     if Task.objects.filter(task_type=Task.TaskTypes.UPDATE, status=Task.Statuses.RUNNING).exists():
         return
 
@@ -176,6 +180,10 @@ def scheduled_update():
 
 @shared_task
 def scheduled_download():
+    global_preferences = global_preferences_registry.manager()
+    if not global_preferences['download_schedule_enabled']:
+        return
+
     if Task.objects.filter(task_type=Task.TaskTypes.DOWNLOAD, status=Task.Statuses.RUNNING).exists():
         return
 

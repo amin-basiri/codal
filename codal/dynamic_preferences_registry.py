@@ -78,3 +78,17 @@ class DownloadContentPath(StringPreference):
     name = 'download_content_path'
     default = 'Symbols'
     required = True
+
+
+@global_preferences_registry.register
+class DownloadScheduleEnabled(BooleanPreference):
+    name = 'download_schedule_enabled'
+    default = False
+    required = True
+
+
+@global_preferences_registry.register
+class UpdateScheduleEnabled(BooleanPreference):
+    name = 'update_schedule_enabled'
+    default = False
+    required = True
