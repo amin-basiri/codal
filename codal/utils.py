@@ -6,6 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from dynamic_preferences.registries import global_preferences_registry
 from django.utils import timezone
 from pathlib import Path
+from bs4 import BeautifulSoup
 
 from codal import processor
 from codal.models import Letter, Attachment, Task
@@ -151,7 +152,7 @@ def process_folder_name(name):
     return name
 
 
-def process_file_name(name):
+def process_file_name(name, symbol, report_type):
     global_preferences = global_preferences_registry.manager()
     remove_text = global_preferences['remove_name_word'].split('*')
 
@@ -160,15 +161,19 @@ def process_file_name(name):
 
     name = name.replace('/', '-')
 
+    name = symbol + ' ' + report_type + ' ' + name
+
     return name
 
 
 def download_content_to_folder(letter):
     global_preferences = global_preferences_registry.manager()
 
-    content = process_content(processor.download(letter.url, return_text=True))
+    content_page = processor.download(letter.url, javascript=True)
     folder_name = process_folder_name(letter.symbol)
-    file_name = process_file_name(letter.title)
+
+    soup = BeautifulSoup(content_page.text, 'html.parser')
+    options = soup.select('#ddlTable option')
 
     download_content_path = global_preferences['download_content_path']
     folder_path = "{path}/{folder}/".format(
@@ -177,12 +182,18 @@ def download_content_to_folder(letter):
     content_path = Path(folder_path)
     content_path.mkdir(parents=True, exist_ok=True)
 
-    file_path = '{file}.html'.format(file=file_name)
-    file_full_path = content_path / file_path
+    for o in options:
+        response = processor.download(letter.url + '&sheetId={}'.format(o['value']), javascript=True)
+        report_type = o.text[0:o.text.find('\n')-1]
+        file_name = process_file_name(letter.title, letter.symbol, report_type)
+        file_path = '{file}.html'.format(file=file_name)
+        file_full_path = content_path / file_path
 
-    with file_full_path.open("w", encoding='utf-8') as f:
-        f.write(content)
-        f.close()
+        with file_full_path.open("w", encoding='utf-8') as f:
+            response.html.render()
+            proceed_content = process_content(response.html.html)
+            f.write(proceed_content)
+            f.close()
 
 
 def download_attachment_to_letter(letter):

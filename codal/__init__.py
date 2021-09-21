@@ -1,4 +1,5 @@
 from django.utils.functional import cached_property
+from requests_html import HTMLSession
 import time
 import requests
 import re
@@ -16,6 +17,7 @@ class Processor:
 
     def __init__(self):
         self._session = requests.session()
+        self._js_session = HTMLSession()
         self.max_request_retry = 5
         self.retry_interval = 5
         self.verify_ssl = False
@@ -23,6 +25,10 @@ class Processor:
         self.base_url = 'https://codal.ir/'
         self.attachment_url = 'https://codal.ir'
         self.download_attachment_prefix = 'Reports/'
+
+    @cached_property
+    def js_session(self):
+        return self._js_session
 
     @cached_property
     def session(self):
@@ -49,12 +55,15 @@ class Processor:
                     page_number=page_number,
                     from_date=update_from_date)).json()
 
-    def download(self, url, return_text=False, return_attachment_filename=False):
+    def download(self, url, return_text=False, return_attachment_filename=False, javascript=False):
         retry = 1
 
         while retry <= self.max_request_retry:
             try:
-                response = self.session.get(self.base_url + url)
+                if javascript:
+                    response = self.js_session.get(self.base_url + url, verify=self.verify_ssl)
+                else:
+                    response = self.session.get(self.base_url + url)
             except requests.exceptions.RequestException as e:
                 if retry < self.max_request_retry:
                     time.sleep(self.retry_interval)
@@ -62,6 +71,8 @@ class Processor:
                 else:
                     raise e
 
+            if javascript:
+                return response
             if return_text:
                 return response.text
             elif return_attachment_filename:
