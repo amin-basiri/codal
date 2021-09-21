@@ -4,9 +4,16 @@ Codal is a django website to dealing with codal.ir Letters
 
 
 ## Usage
-To run application just run above command
+First make sure you have docker installed in your os.
+
+To run application just run below command
 ```python
 docker-compose up -d
+```
+To prepare database to use:
+```python
+docker exec -it web python manage.py makemigrations
+docker exec -it web python manage.py migrate
 ```
 To create a user and use codal administration
 ```python
