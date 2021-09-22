@@ -20,6 +20,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/codal
+      - "./pyppeteer:/root/.local/share/pyppeteer"
     ports:
       - "80:8000"
     depends_on:
@@ -42,6 +43,7 @@ services:
     command: celery -A codal worker -l info -P solo --logfile=celery.log # Command used to start the Celery worker in the Docker container
     volumes:
       - .:/codal
+      - "./pyppeteer:/root/.local/share/pyppeteer"
     environment:
       - DEBUG=1
       - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
@@ -60,6 +62,7 @@ services:
     command: celery -A codal beat -l info
     volumes:
       - .:/codal
+      - "./pyppeteer:/root/.local/share/pyppeteer"
     environment:
       - DEBUG=1
       - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m

@@ -62,23 +62,23 @@ class Processor:
             try:
                 if javascript:
                     response = self.js_session.get(self.base_url + url, verify=self.verify_ssl)
+                    return response
                 else:
                     response = self.session.get(self.base_url + url)
+
+                if return_text:
+                    return response.text
+                elif return_attachment_filename:
+                    file_name = re.findall("filename=(.+)", response.headers.get('content-disposition', ""))[0]
+                    return file_name.encode('iso8859-1').decode('utf-8'), response.content
+                return response.content
+
             except requests.exceptions.RequestException as e:
                 if retry < self.max_request_retry:
                     time.sleep(self.retry_interval)
                     retry += 1
                 else:
                     raise e
-
-            if javascript:
-                return response
-            if return_text:
-                return response.text
-            elif return_attachment_filename:
-                file_name = re.findall("filename=(.+)", response.headers.get('content-disposition', ""))[0]
-                return file_name.encode('iso8859-1').decode('utf-8'), response.content
-            return response.content
 
     def get_max_page(self, update_from_date=""):
         return self._search(update_from_date=update_from_date)['Page']

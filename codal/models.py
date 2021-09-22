@@ -46,9 +46,9 @@ class Letter(TimeStampedModel, StatusMixin):
 
     company_name = models.CharField(max_length=100)
 
-    excel_url = models.CharField(max_length=500, default="", null=True)
+    excel_url = models.CharField(max_length=500, default="", null=True, blank=True)
 
-    excel = models.FileField(upload_to='excels/', default=None, null=True)
+    excel = models.FileField(upload_to='excels/', default=None, null=True, blank=True)
 
     has_attachment = models.BooleanField(default=False)
 
@@ -84,7 +84,7 @@ class Letter(TimeStampedModel, StatusMixin):
 
     url = models.CharField(max_length=500, default="", null=True)
 
-    xbrl_url = models.CharField(max_length=500, default="", null=True)
+    xbrl_url = models.CharField(max_length=500, default="", null=True, blank=True)
 
     def __str__(self):
         return self.title
