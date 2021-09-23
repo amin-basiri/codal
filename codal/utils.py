@@ -189,22 +189,40 @@ def download_content_to_folder(letter):
         file_path = '{file}.html'.format(file=file_name)
         file_full_path = content_path / file_path
 
-        with file_full_path.open("w", encoding='utf-8') as f:
-            response.html.render()
-            proceed_content = process_content(response.html.html)
-            f.write(proceed_content)
-            f.close()
+        try:
+            f = file_full_path.open("w", encoding='utf-8')
+        except OSError as exc:
+            if exc.errno == 36:
+                file_name = process_file_name("", letter.symbol, report_type=report_type)
+                file_path = '{file}.html'.format(file=file_name)
+                file_full_path = content_path / file_path
+                f = file_full_path.open("w", encoding='utf-8')
+            else:
+                raise exc
+        response.html.render()
+        proceed_content = process_content(response.html.html)
+        f.write(proceed_content)
+        f.close()
 
     if not options:
         file_name = process_file_name(letter.title, letter.symbol)
         file_path = '{file}.html'.format(file=file_name)
         file_full_path = content_path / file_path
 
-        with file_full_path.open("w", encoding='utf-8') as f:
-            content_page.html.render()
-            proceed_content = process_content(content_page.html.html)
-            f.write(proceed_content)
-            f.close()
+        try:
+            f = file_full_path.open("w", encoding='utf-8')
+        except OSError as exc:
+            if exc.errno == 36:
+                file_name = process_file_name("", letter.symbol)
+                file_path = '{file}.html'.format(file=file_name)
+                file_full_path = content_path / file_path
+                f = file_full_path.open("w", encoding='utf-8')
+            else:
+                raise exc
+        content_page.html.render()
+        proceed_content = process_content(content_page.html.html)
+        f.write(proceed_content)
+        f.close()
 
 
 def download_attachment_to_letter(letter):
