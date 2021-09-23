@@ -26,3 +26,6 @@ celerybeat-schedule.dir
 
 # web Driver
 pyppeteer
+
+# Requests Html Module Fix no Sand Box Bug On Linux
+modules

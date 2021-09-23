@@ -42,7 +42,7 @@ class ErrorMixin(models.Model):
 
 class Letter(TimeStampedModel, StatusMixin):
 
-    attachment_url = models.CharField(max_length=500, default="", null=True)
+    attachment_url = models.CharField(max_length=500, default="", null=True, blank=True)
 
     company_name = models.CharField(max_length=100)
 

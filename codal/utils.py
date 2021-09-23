@@ -161,7 +161,7 @@ def process_file_name(name, symbol, report_type=""):
 
     name = name.replace('/', '-')
 
-    name = symbol + ' ' + report_type + ' ' + name if not report_type else symbol + ' ' + name
+    name = symbol + ' ' + report_type + ' ' + name if report_type else symbol + ' ' + name
 
     return name
 
@@ -182,17 +182,6 @@ def download_content_to_folder(letter):
     content_path = Path(folder_path)
     content_path.mkdir(parents=True, exist_ok=True)
 
-    if not options:
-        file_name = process_file_name(letter.title, letter.symbol)
-        file_path = '{file}.html'.format(file=file_name)
-        file_full_path = content_path / file_path
-
-        with file_full_path.open("w", encoding='utf-8') as f:
-            content_page.html.render()
-            proceed_content = process_content(content_page.html.html)
-            f.write(proceed_content)
-            f.close()
-
     for o in options:
         response = processor.download(letter.url + '&sheetId={}'.format(o['value']), javascript=True)
         report_type = o.text[0:o.text.find('\n')-1]
@@ -203,6 +192,17 @@ def download_content_to_folder(letter):
         with file_full_path.open("w", encoding='utf-8') as f:
             response.html.render()
             proceed_content = process_content(response.html.html)
+            f.write(proceed_content)
+            f.close()
+
+    if not options:
+        file_name = process_file_name(letter.title, letter.symbol)
+        file_path = '{file}.html'.format(file=file_name)
+        file_full_path = content_path / file_path
+
+        with file_full_path.open("w", encoding='utf-8') as f:
+            content_page.html.render()
+            proceed_content = process_content(content_page.html.html)
             f.write(proceed_content)
             f.close()
 
