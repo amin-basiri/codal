@@ -6,9 +6,14 @@ ENV TINI_VERSION=v0.19.0
 RUN curl -L https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini -o /tini && \
     chmod +x /tini
 
-RUN apt-get update       && \
-    apt-get upgrade      && \
-    apt-get install -y      \
+# Add gosu
+ENV GOSU_VERSION=1.12
+RUN curl -L https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64 -o /usr/local/bin/gosu && \
+    chmod +x /usr/local/bin/gosu
+
+RUN apt-get update --assume-yes      && \
+    apt-get upgrade --assume-yes      && \
+    apt-get install -y --assume-yes     \
     gconf-service           \
     libxext6                \
     libxfixes3              \
@@ -64,3 +69,13 @@ WORKDIR /codal
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+
+
+RUN mkdir -p /root/.local/share/pyppeteer/local-chromium/588429/ && \
+    wget https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/588429/chrome-linux.zip -O temp.zip && \
+    unzip temp.zip -d /root/.local/share/pyppeteer/local-chromium/588429/
+    rm temp.zip
+
+RUN wget https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-41/stable-headless-chromium-amazonlinux-2017-03.zip -O temp.zip && \
+    unzip temp.zip -d /codal/modules && \
+    rm temp.zip

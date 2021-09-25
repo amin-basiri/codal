@@ -1,3 +1,0 @@
-https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/588429/chrome-linux.zip
-Download Above Link And Extract It To This Path:
-./local-chromium/588429/
