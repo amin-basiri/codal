@@ -464,11 +464,11 @@ class HTML(BaseParser):
         """
         async def _async_render(*, url: str, script: str = None, scrolldown, sleep: int, wait: float, reload, content: Optional[str], timeout: Union[float, int]):
             try:
-                browser = pyppeteer.launch(headless=True, executablePath='/codal/modules/headless-chromium', args=['--no-sandbox',
-                                                                                                                         '--single-process',
-                                                                                                                         '--disable-dev-shm-usage',
-                                                                                                                         '--disable-gpu',
-                                                                                                                         '--no-zygote'])
+                browser = pyppeteer.launch(headless=True, executablePath='/root/headless-chromium', args=['--no-sandbox',
+                                                                                                          '--single-process',
+                                                                                                          '--disable-dev-shm-usage',
+                                                                                                          '--disable-gpu',
+                                                                                                          '--no-zygote'])
                 page = await (await browser).newPage()
 
                 # Wait before rendering the page, to prevent timeouts.

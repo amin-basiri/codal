@@ -69,5 +69,5 @@ RUN mkdir -p /root/.local/share/pyppeteer/local-chromium/588429/ && \
 
 # Headless Web Driver
 RUN wget https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-41/stable-headless-chromium-amazonlinux-2017-03.zip -O temp.zip && \
-    unzip temp.zip -d /codal/modules/ && \
+    unzip temp.zip -d /root/ && \
     rm temp.zip
