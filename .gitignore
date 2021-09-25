@@ -25,7 +25,9 @@ celerybeat-schedule.dat
 celerybeat-schedule.dir
 
 # web Driver
-pyppeteer
+pyppeteer/.dev_profile
+pyppeteer/local-chromium
 
 # Requests Html Module Fix no Sand Box Bug On Linux
-modules
+modules/headless-chromium
+modules/locales
