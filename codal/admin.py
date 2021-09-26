@@ -20,7 +20,7 @@ class AttachmentInline(admin.TabularInline):
 class LetterAdmin(admin.ModelAdmin):
     list_display = ['title', 'symbol', 'status']
     ordering = ['-publish_datetime']
-    search_fields = ['symbol']
+    search_fields = ['symbol', 'title', 'tracing_no']
     list_filter = ['status', ('publish_datetime', DateTimeRangeFilter), ]
     actions = ['download']
     date_hierarchy = 'publish_datetime'
