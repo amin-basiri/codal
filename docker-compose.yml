@@ -19,7 +19,7 @@ services:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/codal
+      - ".:/codal"
       - "./modules/requests_html.py:/usr/local/lib/python3.9/site-packages/requests_html.py"
     ports:
       - "80:8000"
@@ -42,7 +42,7 @@ services:
     build: .
     command: celery -A codal worker -l info -P solo --logfile=celery.log # Command used to start the Celery worker in the Docker container
     volumes:
-      - .:/codal
+      - ".:/codal"
       - "./modules/requests_html.py:/usr/local/lib/python3.9/site-packages/requests_html.py"
     environment:
       - DEBUG=1
@@ -61,7 +61,7 @@ services:
     build: .
     command: celery -A codal beat -l info
     volumes:
-      - .:/codal
+      - ".:/codal"
       - "./modules/requests_html.py:/usr/local/lib/python3.9/site-packages/requests_html.py"
     environment:
       - DEBUG=1
