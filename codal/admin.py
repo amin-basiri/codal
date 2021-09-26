@@ -127,7 +127,7 @@ class AttachmentAdmin(admin.ModelAdmin):
 
 class TaskAdmin(admin.ModelAdmin):
     list_display = ['type', 'task_type', 'status', 'created', 'end']
-    list_filter = [('created', DateTimeRangeFilter), ]
+    list_filter = ['status', 'task_type', 'type', ('created', DateTimeRangeFilter),]
     date_hierarchy = 'created'
     ordering = ['-created']
 
