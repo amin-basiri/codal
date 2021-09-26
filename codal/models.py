@@ -64,7 +64,7 @@ class Letter(TimeStampedModel, StatusMixin):
 
     is_estimate = models.BooleanField(default=False)
 
-    code = models.CharField(max_length=50, default="", null=True)
+    code = models.CharField(max_length=50, default="", null=True, blank=True)
 
     pdf_url = models.CharField(max_length=500, default="", null=True)
 

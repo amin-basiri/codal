@@ -199,7 +199,7 @@ def download_content_to_folder(letter):
                 f = file_full_path.open("w", encoding='utf-8')
             else:
                 raise exc
-        response.html.render()
+        response.html.render(timeout=20)
         proceed_content = process_content(response.html.html)
         f.write(proceed_content)
         f.close()
@@ -219,7 +219,7 @@ def download_content_to_folder(letter):
                 f = file_full_path.open("w", encoding='utf-8')
             else:
                 raise exc
-        content_page.html.render()
+        content_page.html.render(timeout=20)
         proceed_content = process_content(content_page.html.html)
         f.write(proceed_content)
         f.close()
