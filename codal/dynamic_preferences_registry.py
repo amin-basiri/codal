@@ -92,3 +92,24 @@ class UpdateScheduleEnabled(BooleanPreference):
     name = 'update_schedule_enabled'
     default = False
     required = False
+
+
+@global_preferences_registry.register
+class DownloadExcelPath(StringPreference):
+    name = 'download_excel_path'
+    default = 'excels'
+    required = False
+
+
+@global_preferences_registry.register
+class DownloadPdfPath(StringPreference):
+    name = 'download_pdf_path'
+    default = 'pdfs'
+    required = False
+
+
+@global_preferences_registry.register
+class DownloadAttachmentPath(StringPreference):
+    name = 'download_attachment_path'
+    default = 'attachments'
+    required = False
