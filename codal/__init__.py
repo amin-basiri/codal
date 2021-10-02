@@ -86,15 +86,18 @@ class Processor:
     def get_letters(self, page_number, update_from_date):
         return self._search(page_number=page_number, update_from_date=update_from_date)['Letters']
 
-    def get_letter_attachments_url(self, letter):
+    def get_letter_attachments(self, letter):
         if letter['HasAttachment']:
-            urls = []
+            attachments = []
             attachment_page = self.get(self.attachment_url + letter['AttachmentUrl']).text
             soup = BeautifulSoup(attachment_page, 'html.parser')
             for tr in soup.select("table table table tr[onclick]"):
                 action = tr['onclick']
-                urls.append(self.download_attachment_prefix + action[13:action.find("')")])
-            return urls
+                attachments.append({
+                    'url': self.download_attachment_prefix + action[13:action.find("')")],
+                    'name': tr.select('td')[1].text,
+                })
+            return attachments
         else:
             return []
 

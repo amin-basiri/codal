@@ -124,7 +124,7 @@ class Attachment(TimeStampedModel, StatusMixin):
 
     file = models.FileField(upload_to='attachments/', null=True, blank=True)
 
-    file_name = models.CharField(max_length=256, null=True, blank=True)
+    name = models.CharField(max_length=256, null=True, blank=True)
 
     url = models.CharField(max_length=200, null=True, blank=True)
 
