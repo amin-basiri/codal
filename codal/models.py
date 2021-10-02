@@ -48,7 +48,7 @@ class Letter(TimeStampedModel, StatusMixin):
 
     excel_url = models.CharField(max_length=500, default="", null=True, blank=True)
 
-    excel = models.FileField(upload_to='excels/', default=None, null=True, blank=True)
+    excel_path = models.CharField(max_length=500, null=True, blank=True)
 
     has_attachment = models.BooleanField(default=False)
 
@@ -58,7 +58,7 @@ class Letter(TimeStampedModel, StatusMixin):
 
     has_pdf = models.BooleanField(default=True)
 
-    pdf = models.FileField(upload_to='pdfs/', default=None, null=True)
+    pdf_path = models.CharField(max_length=500, null=True, blank=True)
 
     has_xbrl = models.BooleanField(default=False)
 
@@ -124,7 +124,7 @@ class Attachment(TimeStampedModel, StatusMixin):
 
     letter = models.ForeignKey(Letter, on_delete=models.CASCADE, related_name='attachments')
 
-    file = models.FileField(upload_to='attachments/', null=True, blank=True)
+    path = models.CharField(max_length=500, null=True, blank=True)
 
     name = models.CharField(max_length=256, null=True, blank=True)
 

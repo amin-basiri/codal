@@ -2,7 +2,6 @@ from django.utils.encoding import force_text
 from django.apps import apps
 from django.db import IntegrityError
 import jdatetime
-from django.core.files.uploadedfile import SimpleUploadedFile
 from dynamic_preferences.registries import global_preferences_registry
 from django.utils import timezone
 from pathlib import Path
@@ -48,7 +47,7 @@ def update():
     while page <= max_page:
         letters = processor.get_letters(page, update_from_date=update_from_date)
         for letter in letters:
-            attachments = processor.get_letter_attachments_url(letter)
+            attachments = processor.get_letter_attachments(letter)
             try:
                 _letter = Letter.objects.create(
                     attachment_url=letter['AttachmentUrl'],
@@ -72,10 +71,11 @@ def update():
                     xbrl_url=letter['XbrlUrl']
                 )
 
-                for url in attachments:
+                for attachment in attachments:
                     Attachment.objects.create(
-                        url=url,
-                        letter=_letter
+                        url=attachment.get('url'),
+                        letter=_letter,
+                        name=attachment.get('name')
                     )
             except IntegrityError as e:
                 continue
@@ -92,31 +92,85 @@ def jalali_datetime_to_structured_string(jd):
 
 
 def get_excel_pdf_file_name(letter):
-    return letter.symbol + ' ' + letter.title
+    name = letter.symbol + ' ' + letter.title
+    name = name.replace('/', '-')
+    return name
+
+
+def process_folder_name(name):
+    global_preferences = global_preferences_registry.manager()
+    if global_preferences['replace_arabic_word_folder']:
+        name = replace_arabic_word(name)
+    if global_preferences['replace_arabic_number_folder']:
+        name = replace_arabic_number(name)
+
+    name = name.replace('/', '-')
+
+    return name
+
+
+def save_pdf_file(letter, content):
+    global_preferences = global_preferences_registry.manager()
+    folder_name = process_folder_name(letter.symbol)
+    download_pdf_path = global_preferences['download_pdf_path']
+    folder_path = "{path}/{folder}/".format(
+        path=download_pdf_path,
+        folder=folder_name)
+
+    pdf_path = Path(folder_path)
+    pdf_path.mkdir(parents=True, exist_ok=True)
+
+    file_name = get_excel_pdf_file_name(letter)
+    file_path = '{file}.pdf'.format(file=file_name)
+    file_full_path = pdf_path / file_path
+
+    with file_full_path.open("wb") as f:
+        f.write(content)
+        f.close()
+
+    return file_full_path.resolve().__str__()
+
+
+def save_excel_file(letter, content):
+    global_preferences = global_preferences_registry.manager()
+    folder_name = process_folder_name(letter.symbol)
+    download_excel_path = global_preferences['download_excel_path']
+    folder_path = "{path}/{folder}/".format(
+        path=download_excel_path,
+        folder=folder_name)
+
+    excel_path = Path(folder_path)
+    excel_path.mkdir(parents=True, exist_ok=True)
+
+    file_name = get_excel_pdf_file_name(letter)
+    file_path = '{file}.xls'.format(file=file_name)
+    file_full_path = excel_path / file_path
+
+    with file_full_path.open("wb") as f:
+        f.write(content)
+        f.close()
+
+    return file_full_path.resolve().__str__()
 
 
 def download_pdf_to_letter(letter):
-    if letter.pdf:
+    if letter.pdf_path:
         return
 
-    name = get_excel_pdf_file_name(letter)
+    downloaded_file = processor.download(letter.pdf_url)
 
-    letter.pdf = SimpleUploadedFile("{}.pdf".format(name),
-                                    processor.download(letter.pdf_url),
-                                    content_type="application/pdf")
-    letter.save(update_fields=['pdf'])
+    letter.pdf_path = save_pdf_file(letter, downloaded_file)
+    letter.save(update_fields=['pdf_path'])
 
 
 def download_excel_to_letter(letter):
-    if letter.excel:
+    if letter.excel_path:
         return
 
-    name = get_excel_pdf_file_name(letter)
+    downloaded_file = processor.download(letter.excel_url)
 
-    letter.excel = SimpleUploadedFile("{}.xls".format(name),
-                                      processor.download(letter.excel_url),
-                                      content_type="application/vnd.ms-excel")
-    letter.save(update_fields=['excel'])
+    letter.excel_path = save_excel_file(letter, downloaded_file)
+    letter.save(update_fields=['excel_path'])
 
 
 def replace_arabic_word(text):
@@ -146,18 +200,6 @@ def process_content(content):
     if global_preferences['replace_arabic_number_content']:
         content = replace_arabic_number(content)
     return content
-
-
-def process_folder_name(name):
-    global_preferences = global_preferences_registry.manager()
-    if global_preferences['replace_arabic_word_folder']:
-        name = replace_arabic_word(name)
-    if global_preferences['replace_arabic_number_folder']:
-        name = replace_arabic_number(name)
-
-    name = name.replace('/', '-')
-
-    return name
 
 
 def process_file_name(name, symbol, report_type=""):
@@ -233,19 +275,56 @@ def download_content_to_folder(letter):
         f.close()
 
 
-def get_attachment_name(letter, attachment_name):
-    return letter.symbol + ' ' + letter.title + ' ' + attachment_name
+def get_attachment_file_name(letter, attachment_file_name, attachment, has_title=True):
+    attachment_exp = attachment_file_name[attachment_file_name.rfind('.'):]
+
+    name = letter.symbol + ' ' + letter.title + ' ' + attachment.name + attachment_exp if has_title \
+            else letter.symbol + ' ' + attachment.name + attachment_exp
+    name = name.replace('/', '-')
+    return name
+
+
+def save_attachment_file(letter, content, attachment, attachment_file_name):
+    global_preferences = global_preferences_registry.manager()
+    folder_name = process_folder_name(letter.symbol)
+    download_attachment_path = global_preferences['download_attachment_path']
+    folder_path = "{path}/{folder}/".format(
+        path=download_attachment_path,
+        folder=folder_name)
+
+    attachment_path = Path(folder_path)
+    attachment_path.mkdir(parents=True, exist_ok=True)
+
+    file_path = get_attachment_file_name(letter, attachment_file_name, attachment)
+    file_full_path = attachment_path / file_path
+
+    try:
+        f = file_full_path.open("wb")
+    except OSError as exc:
+        if exc.errno == 36:
+            file_path = get_attachment_file_name(letter, attachment_file_name, attachment, has_title=False)
+            file_full_path = attachment_path / file_path
+            f = file_full_path.open("wb")
+        else:
+            raise exc
+
+    f.write(content)
+    f.close()
+
+    return file_full_path.resolve().__str__()
 
 
 def download_attachment_to_letter(letter):
     for attachment in letter.attachments.filter(status=Attachment.Statuses.RETRIEVED):
         attachment.set_downloading()
 
-        attachment_content = processor.download(attachment.url, return_attachment_filename=True)
-        name = get_attachment_name(letter, attachment_content[0])
-        attachment.file = SimpleUploadedFile(name, attachment_content[1])
-        attachment.file_name = name
-        attachment.save(update_fields=['file', 'file_name'])
+        attachment_name_content = processor.download(attachment.url, return_attachment_filename=True)
+
+        attachment.path = save_attachment_file(letter,
+                                               attachment_name_content[1],
+                                               attachment,
+                                               attachment_name_content[0])
+        attachment.save(update_fields=['path'])
 
         attachment.set_downloaded()
 
