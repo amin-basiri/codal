@@ -233,13 +233,18 @@ def download_content_to_folder(letter):
         f.close()
 
 
+def get_attachment_name(letter, attachment_name):
+    return letter.symbol + ' ' + letter.title + ' ' + attachment_name
+
+
 def download_attachment_to_letter(letter):
     for attachment in letter.attachments.filter(status=Attachment.Statuses.RETRIEVED):
         attachment.set_downloading()
 
         attachment_content = processor.download(attachment.url, return_attachment_filename=True)
-        attachment.file = SimpleUploadedFile(attachment_content[0], attachment_content[1])
-        attachment.file_name = attachment_content[0]
+        name = get_attachment_name(letter, attachment_content[0])
+        attachment.file = SimpleUploadedFile(name, attachment_content[1])
+        attachment.file_name = name
         attachment.save(update_fields=['file', 'file_name'])
 
         attachment.set_downloaded()
