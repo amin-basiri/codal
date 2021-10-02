@@ -91,11 +91,17 @@ def jalali_datetime_to_structured_string(jd):
     return "{}/{}/{}".format(year, month, day)
 
 
+def get_excel_pdf_file_name(letter):
+    return letter.symbol + ' ' + letter.title
+
+
 def download_pdf_to_letter(letter):
     if letter.pdf:
         return
 
-    letter.pdf = SimpleUploadedFile("{}-{}.pdf".format(letter.symbol, letter.code),
+    name = get_excel_pdf_file_name(letter)
+
+    letter.pdf = SimpleUploadedFile("{}.pdf".format(name),
                                     processor.download(letter.pdf_url),
                                     content_type="application/pdf")
     letter.save(update_fields=['pdf'])
@@ -105,7 +111,9 @@ def download_excel_to_letter(letter):
     if letter.excel:
         return
 
-    letter.excel = SimpleUploadedFile("{}-{}.xls".format(letter.symbol, letter.code),
+    name = get_excel_pdf_file_name(letter)
+
+    letter.excel = SimpleUploadedFile("{}.xls".format(name),
                                       processor.download(letter.excel_url),
                                       content_type="application/vnd.ms-excel")
     letter.save(update_fields=['excel'])
