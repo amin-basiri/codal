@@ -112,9 +112,9 @@ class Log(TimeStampedModel, ErrorMixin):
 
     type = models.CharField(default=Types.INFO, max_length=10, choices=Types.CHOICES)
 
-    message = models.TextField(blank=True)
+    message = models.TextField(blank=True, null=True, default="")
 
-    traceback = models.TextField(blank=True)
+    traceback = models.TextField(blank=True, null=True, default="")
 
     class Meta:
         verbose_name_plural = "Logs"
