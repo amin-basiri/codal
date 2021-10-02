@@ -131,7 +131,7 @@ class Attachment(TimeStampedModel, StatusMixin):
     url = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
-        return self.letter.title
+        return self.name
 
     class Meta:
         verbose_name_plural = "Attachments"
