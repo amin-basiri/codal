@@ -112,7 +112,9 @@ class Log(TimeStampedModel, ErrorMixin):
 
     type = models.CharField(default=Types.INFO, max_length=10, choices=Types.CHOICES)
 
-    message = models.CharField(default="", null=True, max_length=100)
+    message = models.TextField(blank=True)
+
+    traceback = models.TextField(blank=True)
 
     class Meta:
         verbose_name_plural = "Logs"
@@ -192,3 +194,5 @@ class Task(TimeStampedModel, ErrorMixin):
         verbose_name_plural = "Tasks"
 
 
+# TODO Add Foreign Key For Log To Generic
+# TODO Add Traceback And Error Message To Attachment , Task , Letter Except Log

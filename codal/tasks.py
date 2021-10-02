@@ -1,13 +1,11 @@
 from celery import shared_task
-from codal.celery import app
-from celery.schedules import crontab
 import jdatetime
 from requests.exceptions import RequestException
 from dynamic_preferences.registries import global_preferences_registry
 from django.utils import timezone
 import logging
 from django.db import transaction
-from django.conf import settings
+import traceback
 
 from codal.models import Log, Letter, Task, Attachment
 from codal import utils
@@ -32,12 +30,15 @@ def update():
     except RequestException as e:
         message = "به دلیل اختلال در اینترنت , به روز رسانی با خطا مواجه شد"
         error = str(e)
+        trace_back = traceback.format_exc()
     except Exception as e:
         message = "به روزرسانی با خطای نامعلومی مواجه شد"
         error = str(e)
+        trace_back = traceback.format_exc()
     else:
         message = "به روز رسانی با موفقیت انجام شد"
         error = ""
+        trace_back = ""
         global_preferences['update_from_date'] = utils.jalali_datetime_to_structured_string(
             jdatetime.datetime.fromgregorian(year=now.year, month=now.month, day=now.day)
         )
@@ -45,7 +46,8 @@ def update():
     Log.objects.create(
         type=Log.Types.ERROR if error else Log.Types.SUCCESS,
         message=message,
-        error=error
+        error=error,
+        traceback=trace_back
     )
 
     utils.handle_task_complete(error, Task.TaskTypes.UPDATE)
@@ -81,17 +83,21 @@ def download_retrieved_letter():
     except RequestException as e:
         message = "به دلیل اختلال در اینترنت , دانلود گزارشات دانلود نشده با خطا مواجه شد"
         error = str(e)
+        trace_back = traceback.format_exc()
     except Exception as e:
         message = "دانلود گزارشات دانلود نشده با خطای نامعلومی مواجه شد"
         error = str(e)
+        trace_back = traceback.format_exc()
     else:
         message = "دانلود گزارشات دانلود نشده با موفقیت انجام شد"
         error = ""
+        trace_back = ""
 
     Log.objects.create(
         type=Log.Types.ERROR if error else Log.Types.SUCCESS,
         message=message,
-        error=error
+        error=error,
+        traceback=trace_back
     )
 
     Letter.objects.filter(
@@ -137,21 +143,25 @@ def download(serialized_letters):
                 tracing_no=letter.tracing_no
             )
             error = str(e)
+            trace_back = traceback.format_exc()
         except Exception as e:
             message = "دانلود گزارش با شماره پیگیری {tracing_no} با خطای نامعلومی مواجه شد".format(
                 tracing_no=letter.tracing_no
             )
             error = str(e)
+            trace_back = traceback.format_exc()
         else:
             message = "دانلود گزارش با شماره پیگیری {tracing_no} با موفقیت انجام شد".format(
                 tracing_no=letter.tracing_no
             )
             error = ""
+            trace_back = ""
 
         Log.objects.create(
             type=Log.Types.ERROR if error else Log.Types.SUCCESS,
             message=message,
-            error=error
+            error=error,
+            traceback=trace_back
         )
 
         if letter.status == Letter.Statuses.DOWNLOADING:
