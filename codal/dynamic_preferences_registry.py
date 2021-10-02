@@ -14,56 +14,56 @@ class UpdateFromDate(StringPreference):
 class ReplaceArabicWordContent(BooleanPreference):
     name = 'replace_arabic_word_content'
     default = True
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class ReplaceArabicWordFolder(BooleanPreference):
     name = 'replace_arabic_word_folder'
     default = True
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class ReplaceArabicNumberContent(BooleanPreference):
     name = 'replace_arabic_number_content'
     default = True
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class ReplaceArabicNumberFolder(BooleanPreference):
     name = 'replace_arabic_number_folder'
     default = True
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class DownloadContent(BooleanPreference):
     name = 'download_content'
     default = True
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class DownloadExcel(BooleanPreference):
     name = 'download_excel'
     default = True
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class DownloadPdf(BooleanPreference):
     name = 'download_pdf'
     default = True
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class DownloadAttachment(BooleanPreference):
     name = 'download_attachment'
     default = True
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
@@ -77,18 +77,18 @@ class RemoveNameWord(StringPreference):
 class DownloadContentPath(StringPreference):
     name = 'download_content_path'
     default = 'Symbols'
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class DownloadScheduleEnabled(BooleanPreference):
     name = 'download_schedule_enabled'
     default = False
-    required = True
+    required = False
 
 
 @global_preferences_registry.register
 class UpdateScheduleEnabled(BooleanPreference):
     name = 'update_schedule_enabled'
     default = False
-    required = True
+    required = False
