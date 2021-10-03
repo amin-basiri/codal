@@ -281,6 +281,9 @@ def get_attachment_file_name(letter, attachment_file_name, attachment, has_title
     name = letter.symbol + ' ' + letter.title + ' ' + attachment.name + attachment_exp if has_title \
             else letter.symbol + ' ' + attachment.name + attachment_exp
     name = name.replace('/', '-')
+    name = name.replace(u'\uf022', '')
+    name = name.replace(u'\xa0', '')
+    name = name.replace('"', '')
     return name
 
 

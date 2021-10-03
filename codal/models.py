@@ -44,7 +44,7 @@ class Letter(TimeStampedModel, StatusMixin):
 
     attachment_url = models.CharField(max_length=500, default="", null=True, blank=True)
 
-    company_name = models.CharField(max_length=100)
+    company_name = models.CharField(max_length=100, blank=True)
 
     excel_url = models.CharField(max_length=500, default="", null=True, blank=True)
 
@@ -66,23 +66,23 @@ class Letter(TimeStampedModel, StatusMixin):
 
     code = models.CharField(max_length=50, default="", null=True, blank=True)
 
-    pdf_url = models.CharField(max_length=500, default="", null=True)
+    pdf_url = models.CharField(max_length=500, default="", null=True, blank=True)
 
     publish_datetime = models.DateTimeField()  # TODO Use JalaliDateTime
 
     sent_datetime = models.DateTimeField()  # TODO Use JalaliDateTime
 
-    symbol = models.CharField(max_length=100)
+    symbol = models.CharField(max_length=100, blank=True)
 
     # tedan_url = models.CharField(max_length=500, default="", null=True)
 
-    title = models.CharField(max_length=500)
+    title = models.CharField(max_length=500, blank=True)
 
-    tracing_no = models.IntegerField(unique=True, editable=False)
+    tracing_no = models.IntegerField(unique=True, editable=False, blank=True)
 
     under_supervision = models.BooleanField(default=False)
 
-    url = models.CharField(max_length=500, default="", null=True)
+    url = models.CharField(max_length=500, default="", null=True, blank=True)
 
     xbrl_url = models.CharField(max_length=500, default="", null=True, blank=True)
 
