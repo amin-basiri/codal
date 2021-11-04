@@ -69,8 +69,8 @@ def download_retrieved_letter():
     download_excel_pref = global_preferences['download_excel']
     download_attachment_pref = global_preferences['download_attachment']
 
-    try:
-        for letter in un_downloaded_letters:
+    for letter in un_downloaded_letters:
+        try:
             letter.set_downloading()
             utils.download(
                 letter,
@@ -80,24 +80,26 @@ def download_retrieved_letter():
                 download_attachment=download_attachment_pref and letter.has_attachment
             )
             letter.set_downloaded()
-    except RequestException as e:
-        message = "به دلیل اختلال در اینترنت , دانلود گزارشات دانلود نشده با خطا مواجه شد"
-        error = str(e)
-        trace_back = traceback.format_exc()
-    except Exception as e:
-        message = "دانلود گزارشات دانلود نشده با خطای نامعلومی مواجه شد"
-        error = str(e)
-        trace_back = traceback.format_exc()
-    else:
-        message = "دانلود گزارشات دانلود نشده با موفقیت انجام شد"
-        error = ""
-        trace_back = ""
+        except RequestException as e:
+            Log.objects.create(
+                type=Log.Types.ERROR,
+                message="به دلیل اختلال در اینترنت , دانلود گزارشات دانلود نشده با خطا مواجه شد",
+                error=str(e),
+                traceback=traceback.format_exc()
+            )
+        except Exception as e:
+            Log.objects.create(
+                type=Log.Types.ERROR,
+                message="دانلود گزارشات دانلود نشده با خطای نامعلومی مواجه شد",
+                error=str(e),
+                traceback=traceback.format_exc()
+            )
 
     Log.objects.create(
-        type=Log.Types.ERROR if error else Log.Types.SUCCESS,
-        message=message,
-        error=error,
-        traceback=trace_back
+        type=Log.Types.SUCCESS,
+        message="دانلود گزارشات دانلود نشده با موفقیت انجام شد",
+        error="",
+        traceback=""
     )
 
     Letter.objects.filter(
@@ -108,7 +110,7 @@ def download_retrieved_letter():
         status=Attachment.Statuses.DOWNLOADING
     ).update(status=Attachment.Statuses.RETRIEVED)
 
-    utils.handle_task_complete(error, Task.TaskTypes.DOWNLOAD)
+    utils.handle_task_complete("", Task.TaskTypes.DOWNLOAD)
 
 
 @shared_task
