@@ -75,3 +75,8 @@ services:
       celery:
         condition: service_started
 
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    env_file: .env
+    ports:
+      - "1433:1433"
