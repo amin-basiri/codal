@@ -30,6 +30,8 @@ services:
         condition: service_started
       celery-beat:
         condition: service_started
+      sql-server:
+        condition: service_started
 
   redis:
     container_name: redis
@@ -76,7 +78,10 @@ services:
         condition: service_started
 
   sql-server:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    build:
+      dockerfile: SQLDockerFile
     env_file: .env
+    volumes:
+      - "./scripts/:/scripts/"
     ports:
       - "1433:1433"
