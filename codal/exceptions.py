@@ -1,0 +1,2 @@
+class ReportExtractorException(Exception):
+    pass
