@@ -8,7 +8,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from codal import processor
-from codal.models import Letter, Attachment, Task
+from codal.models import Letter, Attachment, Task, Report
 from codal import signals
 
 
@@ -253,6 +253,12 @@ def download_content_to_folder(letter):
         proceed_content = process_content(response.html.html)
         f.write(proceed_content)
         f.close()
+
+        Report.objects.create(
+            name=report_type,
+            letter=letter,
+            path=file_full_path,
+        )
 
     if not options:
         file_name = process_file_name(letter.title, letter.symbol)
