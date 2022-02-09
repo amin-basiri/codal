@@ -1,6 +1,8 @@
 import pyodbc
 import os
 
+from codal.models import Letter
+
 
 class SQLBackend:
     def __init__(self, database, username, password, driver='{ODBC Driver 17 for SQL Server}', server='.'):
@@ -20,10 +22,6 @@ class SQLBackend:
         self.cursor.execute(query)
         self.cursor.commit()
 
-    def databases(self):
-        self.cursor.execute('SELECT * FROM sys.databases')
-        return self.cursor.fetchall()
-
 
 sql = SQLBackend(
     database=os.environ.get('SQL_DATABASE'),
@@ -32,4 +30,10 @@ sql = SQLBackend(
     server=os.environ.get('SQL_SERVER'),
 )
 
-print(sql.databases())
+
+class LetterScraperBackend:
+    def __init__(self, letter: Letter):
+        self.letter = letter
+
+    def scrape(self):
+        pass

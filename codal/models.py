@@ -210,7 +210,7 @@ class Report(TimeStampedModel):
 
     letter = models.ForeignKey(Letter, related_name='reports', on_delete=models.CASCADE)
 
-    path = models.FilePathField(default=None, null=True)
+    path = models.CharField(default="", max_length=256)
 
 
 # TODO Add Foreign Key For Log To Generic

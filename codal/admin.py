@@ -5,16 +5,19 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.db import transaction
 from rangefilter.filters import DateTimeRangeFilter
-from django.forms.models import BaseInlineFormSet
 
-from codal.models import Letter, Log, Attachment, Task
+from codal.models import Letter, Log, Attachment, Task, Report
 from codal.utils import serialize_instance
-from codal import utils, tasks
+from codal import tasks
 
 
 class AttachmentInline(admin.TabularInline):
     model = Attachment
     exclude = ('url', )
+
+
+class ReportInline(admin.TabularInline):
+    model = Report
 
 
 class LetterAdmin(admin.ModelAdmin):
@@ -25,7 +28,7 @@ class LetterAdmin(admin.ModelAdmin):
     actions = ['download']
     date_hierarchy = 'publish_datetime'
     change_list_template = 'change_list.html'
-    inlines = [AttachmentInline, ]
+    inlines = [AttachmentInline, ReportInline, ]
 
     def get_rangefilter_publish_datetime_title(self, request, field_path):
         return 'Publish DateTime'
