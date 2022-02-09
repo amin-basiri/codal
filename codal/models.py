@@ -206,7 +206,9 @@ class Report(TimeStampedModel):
 
     status = models.CharField(default=Statuses.DOWNLOADED, max_length=20, choices=Statuses.CHOICES)
 
-    name = models.CharField(default="", max_length=150)
+    name = models.CharField(default="", max_length=256)
+
+    type = models.CharField(default="", max_length=150)
 
     letter = models.ForeignKey(Letter, related_name='reports', on_delete=models.CASCADE)
 

@@ -255,7 +255,8 @@ def download_content_to_folder(letter):
         f.close()
 
         Report.objects.create(
-            name=report_type,
+            name=file_name,
+            type=report_type,
             letter=letter,
             path=file_full_path.resolve(),
         )
