@@ -68,6 +68,7 @@ def download_retrieved_letter():
     download_content_pref = global_preferences['download_content']
     download_excel_pref = global_preferences['download_excel']
     download_attachment_pref = global_preferences['download_attachment']
+    extract_report_pref = global_preferences['extract_report']
 
     for letter in un_downloaded_letters:
         try:
@@ -77,7 +78,8 @@ def download_retrieved_letter():
                 download_pdf=download_pdf_pref and letter.has_pdf,
                 download_content=download_content_pref and letter.has_html,
                 download_excel=download_excel_pref and letter.has_excel,
-                download_attachment=download_attachment_pref and letter.has_attachment
+                download_attachment=download_attachment_pref and letter.has_attachment,
+                extract_report=extract_report_pref and letter.has_html
             )
             letter.set_downloaded()
         except RequestException as e:
@@ -122,6 +124,7 @@ def download(serialized_letters):
     download_content_pref = global_preferences['download_content']
     download_excel_pref = global_preferences['download_excel']
     download_attachment_pref = global_preferences['download_attachment']
+    extract_report_pref = global_preferences['extract_report']
 
     for letter in deserialized_letters:
         Log.objects.create(
@@ -137,7 +140,8 @@ def download(serialized_letters):
                 download_pdf=download_pdf_pref and letter.has_pdf,
                 download_content=download_content_pref and letter.has_html,
                 download_excel=download_excel_pref and letter.has_excel,
-                download_attachment=download_attachment_pref and letter.has_attachment
+                download_attachment=download_attachment_pref and letter.has_attachment,
+                extract_report=extract_report_pref and letter.has_html
             )
             letter.set_downloaded()
         except RequestException as e:
