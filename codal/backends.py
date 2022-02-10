@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 from codal.models import Report
 from codal.exceptions import ReportExtractorException
-from codal.utils import convert_report_type_name
+from codal import utils
 
 
 class BaseStoreBackend:
@@ -63,7 +63,7 @@ class ReportExtractorBackend:
 
             period_end_date = soup.select('#ctl00_lblPeriodEndToDate')[0].text
             report_name = soup.select('#ddlTable option[selected]')[0].text
-            report_name = convert_report_type_name(report_name)
+            report_name = utils.convert_report_type_name(report_name)
             is_audited = soup.select('#ctl00_lblIsAudited')[0].text
             symbol = soup.select('#ctl00_txbSymbol')[0].text
 
