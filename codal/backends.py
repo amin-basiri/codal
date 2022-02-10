@@ -40,7 +40,7 @@ class SQLStoreBackend(BaseStoreBackend):
 class ReportExtractorBackend:
 
     def __init__(self, store: BaseStoreBackend):
-        self.store = store
+        self._store = store
 
         self.ReportDefaults = {
             "صورت وضعیت مالی": {
@@ -83,7 +83,7 @@ class ReportExtractorBackend:
 
                 max_header_size = len(ths) if len(ths) > max_header_size else max_header_size
 
-                self.store.insert(
+                self._store.insert(
                     table=self.ReportDefaults[report.type]['table_name'],
                     values=row
                 )
@@ -97,7 +97,7 @@ class ReportExtractorBackend:
                 row += ','
                 row += ','.join([f"N''" for i in range(1, self.ReportDefaults[report.type]['max_column'] - len(tds) - len(fixed_columns) + 2)])
 
-                self.store.insert(
+                self._store.insert(
                     table=self.ReportDefaults[report.type]['table_name'],
                     values=row
                 )

@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 from codal import processor
 from codal.models import Letter, Attachment, Task, Report
 from codal import signals
+from codal.backends import extractor
+from codal.exceptions import ReportExtractorException
 
 
 def serialize_instance(instance):
@@ -381,11 +383,20 @@ def download_attachment_to_letter(letter):
         attachment.set_downloaded()
 
 
+def extract_letter_reports(letter):
+    for report in letter.reports.all():
+        try:
+            extractor.extract(report)
+        except ReportExtractorException:
+            pass
+
+
 def download(letter,
              download_pdf=False,
              download_content=False,
              download_excel=False,
-             download_attachment=False):
+             download_attachment=False,
+             extract_report=False):
     if download_pdf:
         download_pdf_to_letter(letter)
     if download_excel:
@@ -394,6 +405,8 @@ def download(letter,
         download_content_to_folder(letter)
     if download_attachment:
         download_attachment_to_letter(letter)
+    if extract_report and download_content:
+        extract_letter_reports(letter)
 
 
 def handle_task_complete(error, task_type):
