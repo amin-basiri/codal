@@ -65,7 +65,7 @@ class ReportExtractorBackend:
             report_name = soup.select('#ddlTable option[selected]')[0].text
             report_name = utils.convert_report_type_name(report_name)
             is_audited = soup.select('#ctl00_lblIsAudited')[0].text
-            # symbol = soup.select('#ctl00_txbSymbol')[0].text
+            # symbol = soup.select('#ctl00_txbSymbol')[0].text  # Some Symbol Names Are Incorrect
             symbol = report.letter.symbol
 
             fixed_columns = [period_end_date, report_name, is_audited, symbol]

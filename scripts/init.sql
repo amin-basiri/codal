@@ -11,6 +11,8 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = '$(SQL_DATABASE)')
 -- Check Table Existence
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='$(SQL_TABLE)' and xtype='U')
 BEGIN
+
+    -- Financial Statements Table
     CREATE TABLE $(SQL_TABLE) (
         Id INT PRIMARY KEY IDENTITY (1, 1),
         col1 NVARCHAR(500),
