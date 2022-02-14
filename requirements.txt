@@ -44,3 +44,4 @@ w3lib==1.22.0
 wcwidth==0.2.5
 websockets==9.1
 zipp==3.5.0
+pyodbc==4.0.32

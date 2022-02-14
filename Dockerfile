@@ -1,6 +1,10 @@
 FROM python:3.9
 LABEL MAINTAINER="Amin Bs | github.com/amin-bs"
 
+
+ENV PYTHONUNBUFFERED 1
+
+
 # Add tini
 ENV TINI_VERSION=v0.19.0
 RUN curl -L https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini -o /tini && \
@@ -51,7 +55,18 @@ RUN apt-get update --assume-yes       && \
     lib32z1
 
 
-ENV PYTHONUNBUFFERED 1
+# Install ODBC Driver 17 And Pyodbc Dependencies
+RUN apt-get install -y --assume-yes  \
+    unixodbc        \
+    unixodbc-dev
+
+
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -  && \
+    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update --assume-yes && \
+    ACCEPT_EULA=Y apt-get install -y --assume-yes \
+                  msodbcsql17
+
 
 RUN mkdir /codal
 COPY . /codal
@@ -66,6 +81,7 @@ RUN mkdir -p /root/.local/share/pyppeteer/local-chromium/588429/ && \
     wget https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/588429/chrome-linux.zip -O temp.zip && \
     unzip temp.zip -d /root/.local/share/pyppeteer/local-chromium/588429/ && \
     rm temp.zip
+
 
 # Headless Web Driver
 RUN wget https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-41/stable-headless-chromium-amazonlinux-2017-03.zip -O temp.zip && \

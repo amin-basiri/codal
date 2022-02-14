@@ -30,6 +30,9 @@ services:
         condition: service_started
       celery-beat:
         condition: service_started
+      sql-server:
+        condition: service_started
+    env_file: .env
 
   redis:
     container_name: redis
@@ -44,12 +47,7 @@ services:
     volumes:
       - ".:/codal"
       - "./modules/requests_html.py:/usr/local/lib/python3.9/site-packages/requests_html.py"
-    environment:
-      - DEBUG=1
-      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
-      # depends on show that celery worker service requires the web service and the redis service to run
+    env_file: .env
     depends_on:
       redis:
         condition: service_started
@@ -63,15 +61,19 @@ services:
     volumes:
       - ".:/codal"
       - "./modules/requests_html.py:/usr/local/lib/python3.9/site-packages/requests_html.py"
-    environment:
-      - DEBUG=1
-      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
-      # depends on show that celery worker service requires the web service and the redis service to run
+    env_file: .env
     depends_on:
       mysql-db:
         condition: service_healthy
       celery:
         condition: service_started
 
+  sql-server:
+    container_name: sql-server
+    build:
+      dockerfile: SQLDockerFile
+    env_file: .env
+    volumes:
+      - "./scripts/:/scripts/"
+    ports:
+      - "1433:1433"

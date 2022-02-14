@@ -46,6 +46,13 @@ class DownloadContent(BooleanPreference):
 
 
 @global_preferences_registry.register
+class ExtractReport(BooleanPreference):
+    name = 'extract_report'
+    default = True
+    required = False
+
+
+@global_preferences_registry.register
 class DownloadExcel(BooleanPreference):
     name = 'download_excel'
     default = True

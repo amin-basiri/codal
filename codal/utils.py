@@ -8,8 +8,10 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from codal import processor
-from codal.models import Letter, Attachment, Task
+from codal.models import Letter, Attachment, Task, Report
 from codal import signals
+from codal.backends import extractor
+from codal.exceptions import ReportExtractorException
 
 
 def serialize_instance(instance):
@@ -193,6 +195,48 @@ def replace_arabic_number(text):
     return text
 
 
+def convert_report_type_name(name):
+    name = name.replace('(شامل مقادیر برآوردی)', '')
+    name = name.replace('ترازنامه', 'ترازنامه')
+    name = name.replace('صورت وضعیت مالی', 'ترازنامه')
+    name = name.replace('سود و زیان جامع', 'سود و زیان جامع')
+    name = name.replace('سود و زیان', 'سود و زیان')
+    name = name.replace('جریان وجوه نقد', 'جریان وجوه نقد')
+    name = name.replace('تغییرات در حقوق مالکانه', 'تغییرات در حقوق مالکانه')
+    name = name.replace('آمار تولید و فروش اطلاعات', 'آمار تولید و فروش')
+    name = name.replace('آمار تولید و فروش صورتهای', 'آمار تولید و فروش')
+    name = name.replace('آمار تولید و فروش صورت‌های', 'آمار تولید و فروش')
+    name = name.replace('گزارش فعالیت ماهانه دوره', 'گزارش فعالیت ماهانه')
+    name = name.replace('گزارش تفسیری - صفحه 1', 'گزارش تفسیری - صفحه 1')
+    name = name.replace('گزارش تفسیری - صفحه 2', 'گزارش تفسیری - صفحه 2')
+    name = name.replace('گزارش تفسیری - صفحه 3', 'گزارش تفسیری - صفحه 3')
+    name = name.replace('گزارش تفسیری - صفحه 4', 'گزارش تفسیری - صفحه 4')
+    name = name.replace('گزارش تفسیری - صفحه 5', 'گزارش تفسیری - صفحه 5')
+    name = name.replace('نظر حسابرس', 'نظر حسابرس')
+    name = name.replace('پورتفوی شرکتهای پذیرفته', 'صورت وضعیت پرتفوی شرکتهای پذیرفته شده در بورس')
+    name = name.replace('پرتفوی  شرکتهای پذیرفته', 'صورت وضعیت پرتفوی شرکتهای پذیرفته شده در بورس')
+    name = name.replace('صورت ریزمعاملات سهام - واگذار شده ', 'صورت ریز معاملات سهام - واگذارشده')
+    name = name.replace('صورت خالص دارایی', 'صورت خالص دارایی ها')
+    name = name.replace('گردش خالص دارایی', 'گردش خالص دارایی ها')
+    name = name.replace('درآمد حاصل از سرمایه‌گذاری‌ها', 'درآمد حاصل از سرمایه گذاری ها')
+    name = name.replace('سود (زیان) ناخالص فعالیت بیمه‌ای (قبل از درآمد سرمایه‌گذاری از محل ذخایر فنی)',
+                    'سود (زیان) ناخالص فعالیتهای بیمه ای')
+    name = name.replace('صورت ریزمعاملات سهام - تحصیل شده', 'صورت ریز معاملات سهام - تحصیل شده')
+    name = name.replace('صورت سرمایه گذاریها به تفکیک گروه صنعت', 'سرمایه گذاری ها به تفکیک گروه صنعت')
+    name = name.replace('درآمد سود سهام محقق شده', 'درآمد سود سهام محقق شده')
+    name = name.replace('جریان های نقدی', 'جریان وجوه نقد')
+    name = name.replace('خالص ارزش هر واحد سرمایه گذاری', 'ارزش خالص هر واحد سرمایه گذاری')
+    name = name.replace('آمار تولید و فروش گزارش', 'آمار تولید و فروش')
+    name = name.replace('پورتفوی شرکتهای خارج', 'صورت وضعیت پرتفوی شرکتهای خارج از بورس')
+    name = name.replace('پرتفوی  شرکتهای خارج', 'صورت وضعیت پرتفوی شرکتهای خارج از بورس')
+    name = name.replace('پورتفوی صندوق', 'صورت وضعیت پورتفوی صندوق سرمایه گذاری ')
+    name = name.replace('پرتفوی دوره', 'صورت وضعیت پورتفوی صندوق سرمایه گذاری ')
+    name = name.replace('تلفیقی دوره', '')
+    name = name.replace('تلفیقی سال', '')
+
+    return name
+
+
 def process_content(content):
     global_preferences = global_preferences_registry.manager()
     if global_preferences['replace_arabic_word_content']:
@@ -253,6 +297,13 @@ def download_content_to_folder(letter):
         proceed_content = process_content(response.html.html)
         f.write(proceed_content)
         f.close()
+
+        Report.objects.create(
+            name=file_name,
+            type=report_type,
+            letter=letter,
+            path=file_full_path.resolve(),
+        )
 
     if not options:
         file_name = process_file_name(letter.title, letter.symbol)
@@ -332,11 +383,20 @@ def download_attachment_to_letter(letter):
         attachment.set_downloaded()
 
 
+def extract_letter_reports(letter):
+    for report in letter.reports.all():
+        try:
+            extractor.extract(report)
+        except ReportExtractorException:
+            pass
+
+
 def download(letter,
              download_pdf=False,
              download_content=False,
              download_excel=False,
-             download_attachment=False):
+             download_attachment=False,
+             extract_report=False):
     if download_pdf:
         download_pdf_to_letter(letter)
     if download_excel:
@@ -345,6 +405,8 @@ def download(letter,
         download_content_to_folder(letter)
     if download_attachment:
         download_attachment_to_letter(letter)
+    if extract_report and download_content:
+        extract_letter_reports(letter)
 
 
 def handle_task_complete(error, task_type):

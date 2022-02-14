@@ -194,5 +194,26 @@ class Task(TimeStampedModel, ErrorMixin):
         verbose_name_plural = "Tasks"
 
 
+class Report(TimeStampedModel):
+    class Statuses:
+        DOWNLOADED = 'downloaded'
+        EXTRACTED = 'extracted'
+
+        CHOICES = (
+            (DOWNLOADED, 'Downloaded'),
+            (EXTRACTED, 'Extracted'),
+        )
+
+    status = models.CharField(default=Statuses.DOWNLOADED, max_length=20, choices=Statuses.CHOICES)
+
+    name = models.CharField(default="", max_length=256)
+
+    type = models.CharField(default="", max_length=150)
+
+    letter = models.ForeignKey(Letter, related_name='reports', on_delete=models.CASCADE)
+
+    path = models.CharField(default="", max_length=256)
+
+
 # TODO Add Foreign Key For Log To Generic
 # TODO Add Traceback And Error Message To Attachment , Task , Letter Except Log
