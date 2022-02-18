@@ -85,21 +85,21 @@ def download_retrieved_letter():
         except RequestException as e:
             Log.objects.create(
                 type=Log.Types.ERROR,
-                message="به دلیل اختلال در اینترنت , دانلود گزارشات دانلود نشده با خطا مواجه شد",
+                message="به دلیل اختلال در اینترنت , دانلود گزارش {letter} با خطا مواجه شد".format(letter=letter.tracing_no),
                 error=str(e),
                 traceback=traceback.format_exc()
             )
         except Exception as e:
             Log.objects.create(
                 type=Log.Types.ERROR,
-                message="دانلود گزارشات دانلود نشده با خطای نامعلومی مواجه شد",
+                message="دانلود گزارش {letter} با خطای نامعلومی مواجه شد".format(letter=letter.tracing_no),
                 error=str(e),
                 traceback=traceback.format_exc()
             )
 
     Log.objects.create(
-        type=Log.Types.SUCCESS,
-        message="دانلود گزارشات دانلود نشده با موفقیت انجام شد",
+        type=Log.Types.INFO,
+        message="دانلود گزارشات دانلود نشده پایان یافت",
         error="",
         traceback=""
     )
