@@ -72,6 +72,7 @@ services:
     container_name: sql-server
     build:
       dockerfile: SQLDockerFile
+      context: .
     env_file: .env
     volumes:
       - "./scripts/:/scripts/"
